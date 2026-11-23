@@ -139,7 +139,7 @@ export default function Studies() {
           </Expand>
 
           <Expand title="Shipments">
-            <KV rows={[['Service lines', sel.serviceLines.map((l) => (l === 'clinical' ? 'Clinical Supply Logistics' : l === 'centrallab' ? 'Central Lab Logistics' : l === 'radiopharma' ? 'Radiopharma' : l === 'cellgene' ? 'Cell & Gene Therapies' : l)).join(', ')], ['Deliveries', `${sel.deliveries} of ${sel.collections} collections`]]} />
+            <KV rows={[['Service lines', sel.serviceLines.map((l) => (l === 'clinical' ? 'Clinical Supply Logistics' : 'Radiopharma')).join(', ')], ['Deliveries', `${sel.deliveries} of ${sel.collections} collections`]]} />
             <div style={{ marginTop: 12 }}><Link to="/shipments" className="btn secondary sm" onClick={close}>View shipments for this study<ArrowRight size={15} /></Link></div>
           </Expand>
         </Drawer>

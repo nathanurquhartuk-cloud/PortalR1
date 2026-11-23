@@ -6,7 +6,7 @@ export const STUDIES = [
     title: "Phase III \u00b7 AZD-4573 in advanced solid tumours",
     phase: "Phase III",
     therapeuticArea: "Oncology",
-    serviceLines: ["clinical", "centrallab"],
+    serviceLines: ["clinical"],
     sites: 28,
     countries: 9,
     collections: 421,
@@ -111,7 +111,7 @@ export const STUDIES = [
     title: "Phase II \u00b7 cardiovascular outcomes",
     phase: "Phase II",
     therapeuticArea: "Cardiovascular, renal and metabolism",
-    serviceLines: ["clinical", "centrallab"],
+    serviceLines: ["clinical"],
     sites: 22,
     countries: 7,
     collections: 315,
@@ -182,7 +182,7 @@ export const STUDIES = [
     title: "Phase I \u00b7 autologous cell therapy",
     phase: "Phase I",
     therapeuticArea: "Cell and gene therapy",
-    serviceLines: ["centrallab"],
+    serviceLines: ["clinical"],
     sites: 18,
     countries: 5,
     collections: 190,
@@ -228,7 +228,7 @@ export const STUDIES = [
       },
       {
         date: "Last week",
-        title: "Cell & Gene Therapies quote requested",
+        title: "Clinical Supply Logistics quote requested",
         detail: "QUO-2026-015 \u00b7 Critical tier bundle with chain of identity and cryogenic dry shipper add-ons \u00b7 CPQ pricing.",
         tone: "info"
       }

@@ -23,13 +23,12 @@ const R1_PAGES = PAGES.filter((p) => (FEATURES.insightsPages as readonly string[
 
 type SetKey = keyof typeof KPI_SETS
 const SET_KEYS = Object.keys(KPI_SETS) as SetKey[]
-const PURPLE = '#461E96', LILAC = '#8B6FD6', GREEN = '#1E7A3E'
+const PURPLE = '#461E96', GREEN = '#1E7A3E'
 
 // ---------- charts (plain SVG) ----------
 const MONTHS = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct']
 const RADIO = [118, 122, 126, 131, 136, 140, 146, 151, 157, 163, 170, 178]
-const LAB = [122, 124, 127, 129, 132, 134, 136, 138, 139, 141, 143, 142]
-const CLIN = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18]
+const CLIN = [96, 99, 103, 106, 110, 113, 117, 121, 124, 128, 133, 141]
 
 const SPEND = [78, 82, 85, 88, 92, 95, 98, 103, 106, 112, 118, 124]
 function SpendChart() {
@@ -66,12 +65,11 @@ function VolumeChart() {
       {MONTHS.map((m, i) => {
         const x = padL + i * bw + bw * 0.22
         const w = bw * 0.56
-        const r = RADIO[i], l = LAB[i], c = CLIN[i]
+        const r = RADIO[i], c = CLIN[i]
         return (
           <g key={m}>
             <rect x={x} y={y(r)} width={w} height={y(0) - y(r)} fill={PURPLE} rx={2} />
-            <rect x={x} y={y(r + l)} width={w} height={y(0) - y(l)} fill={LILAC} rx={2} />
-            {c > 0 && <rect x={x} y={y(r + l + c)} width={w} height={y(0) - y(c)} fill={GREEN} rx={2} />}
+            <rect x={x} y={y(r + c)} width={w} height={y(0) - y(c)} fill={GREEN} rx={2} />
             <text x={x + w / 2} y={H - 8} textAnchor="middle" style={{ fontSize: 11, fill: '#6B6880', fontFamily: 'Inter, sans-serif' }}>{m}</text>
           </g>
         )
@@ -172,7 +170,7 @@ export default function Insights() {
               <div className="strong">Shipment volume by service line</div>
               <div className="small muted" style={{ marginBottom: 10 }}>Last 12 months · ZoomLogi and TMS</div>
               <VolumeChart />
-              <Legend items={[['Radiopharma', PURPLE], ['Central Lab & Biostorage', LILAC], ['Clinical Supply Logistics · from Oct', GREEN]]} />
+              <Legend items={[['Radiopharma', PURPLE], ['Clinical Supply Logistics', GREEN]]} />
             </Card>
             <Card>
               <div className="row" style={{ gap: 8 }}><span className="strong">Smart narrative</span><Pill tone="brand">AI</Pill></div>
@@ -341,7 +339,7 @@ export default function Insights() {
           <Card style={{ marginTop: 16 }}>
             <div className="stack" style={{ gap: 10 }}>
               <p>Emissions per shipment are down 9% year to date as EU road legs consolidate into milk runs.</p>
-              <p>Reusable shipper adoption rose to 62% of consignments, removing single-use packaging from most Central Lab lanes.</p>
+              <p>Reusable shipper adoption rose to 62% of consignments, removing single-use packaging from most clinical supply lanes.</p>
               <p>Monthly offset-ready reports are generated per service line and can be exported for your Scope 3 disclosures.</p>
             </div>
           </Card>
@@ -377,7 +375,7 @@ export default function Insights() {
               <div className="strong">Spend by service line</div>
               <div className="small muted" style={{ marginBottom: 14 }}>Invoiced this quarter · {`$`}170,509</div>
               <div className="stack" style={{ gap: 12 }}>
-                {([['Radiopharma', 92330, 'Critical tier + Data Analytics'], ['Central Lab & Biostorage', 61710, 'Optimised bundle'], ['Clinical Supply Logistics', 16469, 'Critical and Optimised, from October']] as [string, number, string][]).map(([n, v, d]) => (
+                {([['Radiopharma', 92330, 'Critical tier + Data Analytics'], ['Clinical Supply Logistics', 78179, 'Critical and Optimised, from October']] as [string, number, string][]).map(([n, v, d]) => (
                   <div key={n}>
                     <div className="row between small"><span className="strong">{n}</span><span className="mono">${v.toLocaleString('en-US')}</span></div>
                     <div className="tiny muted" style={{ marginBottom: 6 }}>{d}</div>

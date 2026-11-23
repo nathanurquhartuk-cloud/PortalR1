@@ -65,7 +65,7 @@ export const CAPAS: Capa[] = [
     id: 'CAPA-2026-015',
     title: 'Temperature excursion and customs delay at Campinas',
     type: 'Temperature excursion', severity: 'Minor', status: 'Effectiveness check',
-    jobNumber: '261402288CL', orderRef: 'ORD-2026-008', serviceLine: 'Central Lab & Biostorage · Critical tier', lane: 'London (LHR) → Campinas (VCP)',
+    jobNumber: '261402288CL', orderRef: 'ORD-2026-008', serviceLine: 'Clinical Supply Logistics · Critical tier', lane: 'London (LHR) → Campinas (VCP)',
     opened: d(-6), updated: d(-2), targetClose: d(24), owner: 'Priya N. · Customer service', qualityLead: 'Dr Lena K. · Quality and compliance',
     problem: 'A 12-minute excursion to 8.4 °C occurred while the consignment was held for customs inspection at VCP; the hold itself added 9 hours to the planned transit.',
     containment: ['Consignment re-iced at the broker facility; logger confirmed back in range within 12 minutes.', 'Broker alerted and pre-clearance requested for the remaining consignments on the lane.'],
@@ -78,7 +78,7 @@ export const CAPAS: Capa[] = [
     ],
     preventive: [
       { action: 'Add commodity-code validation to the booking data contract for Brazil', owner: 'Operations systems', due: d(-1), status: 'Complete' },
-      { action: 'Pre-clearance by default for Central Lab consignments into Brazil', owner: 'Trade services', due: d(5), status: 'In progress' },
+      { action: 'Pre-clearance by default for clinical supply consignments into Brazil', owner: 'Trade services', due: d(5), status: 'In progress' },
     ],
     effectiveness: { criteria: 'No customs-driven excursions on Brazil lanes across the next 20 consignments.', due: d(24), result: '7 of 20 consignments cleared without inspection so far' },
     productImpact: 'None. Samples remained inside the stability allowance; confirmed by client QA.',

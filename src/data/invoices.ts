@@ -65,7 +65,7 @@ export const INVOICES = [
   {
     number: "INV-26-0918",
     type: "Invoice",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
     orderRef: "ORD-2026-006",
     jobNumber: "261410034CL",
@@ -117,7 +117,7 @@ export const INVOICES = [
   {
     number: "INV-26-0921",
     type: "Invoice",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
     orderRef: "ORD-2026-002",
     jobNumber: "261416022CL",
@@ -257,7 +257,7 @@ export const INVOICES = [
   {
     number: "INV-26-0876",
     type: "Invoice",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
     orderRef: "ORD-2026-004",
     jobNumber: "261388102CL",
@@ -355,11 +355,11 @@ export const INVOICES = [
   {
     number: "INV-26-0851",
     type: "Invoice",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
     orderRef: "ORD-2026-000",
     jobNumber: "261379550CL",
-    route: "Amsterdam \u2192 Frankfurt biorepository",
+    route: "Amsterdam \u2192 Frankfurt clinical depot",
     po: "PO-AZ-88201",
     issued: daysFrom(-32),
     due: daysFrom(-17),

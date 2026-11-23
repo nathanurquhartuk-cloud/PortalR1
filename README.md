@@ -2,6 +2,7 @@
 
 Release 1: thin slice, fully connected experience. Scope follows the Release 1 slide and is switched in `src/lib/release.ts`
 (Depot/Storage, voice, chat and call support, onboarding tour and the upsell catalogue are off; Brokerage (OK to Send) is on).
+Service lines in Release 1 are Radiopharma and Clinical Supply Logistics only (`ACTIVE_LINES`); every data set is seeded for those two.
 
 Brokerage (MVP, visibility first): `/brokerage` lists every cross-border shipment with the Customs brokerage add-on (exports and imports)
 with who acts next and by when; `/brokerage/:job` shows the four OK to Send steps (Documents, Request OK to Send, Review, OK to Send),

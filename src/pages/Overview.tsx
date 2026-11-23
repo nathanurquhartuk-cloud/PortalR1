@@ -13,9 +13,9 @@ import { useLive } from '../lib/live'
 
 const BASE = import.meta.env.BASE_URL
 export const RECOMMENDED: { id: string; title: string; text: string; img: string }[] = [
-  { id: 'cellgene', title: 'Cell & Gene Therapies', text: 'Specialist support for time-critical, patient-specific therapies.', img: 'lab.jpg' },
-  { id: 'warehouse', title: 'Depot and warehouse services', text: 'Connect storage, inventory and distribution to your studies.', img: 'plane.jpg' },
-  { id: 'commercial', title: 'Commercial Supply Logistics', text: 'Finished products, distribution and replenishment, regulated and non-regulated.', img: 'scientist.jpg' },
+  { id: 'radiopharma', title: 'Radiopharma · Data Analytics add-on', text: 'Decay margin, dose utilisation and lane risk for every radiopharmaceutical shipment.', img: 'lab.jpg' },
+  { id: 'clinical', title: 'Clinical Supply Logistics · Customs brokerage', text: 'OK to Send, documents and clearance handled with your clinical shipments.', img: 'plane.jpg' },
+  { id: 'clinical', title: 'Clinical Supply Logistics · IMP returns', text: 'Returns, reconciliation and destruction certificates for your study sites.', img: 'scientist.jpg' },
 ]
 
 export default function Overview() {

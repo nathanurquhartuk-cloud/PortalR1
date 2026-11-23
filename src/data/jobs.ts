@@ -104,43 +104,6 @@ export const JOBS = [
     ]
   },
   {
-    number: "261416022CL",
-    client: "CLINIGEN IRELAND LTD",
-    clientShort: "CLINIGEN IREL\u2026",
-    destination: "Instituto Nacional do Cancer (INCA)",
-    destShort: "Instituto Nacional d\u2026",
-    members: 2,
-    eta: `${fmtMonDay(daysFrom(2))}, 3 PM GMT-3`,
-    etaFull: `${fmtNumeric(daysFrom(2))} 15:00:00 CDT`,
-    leg: 3,
-    deliveryStatus: "On Time",
-    temp: "5\u00b0C",
-    battery: "11%",
-    product: "BIOLOGICAL SAMPLES - UN3373",
-    service: "Central Lab & Biostorage \u00b7 Optimised tier",
-    tempRange: "2 C to 8 C Refrigerated",
-    sensorId: "30141688",
-    origin: [-6.26, 53.35],
-    via: [-43.25, -22.81],
-    dest: [-43.19, -22.9],
-    isOpenAlert: true,
-    issues: [
-      {
-        kind: "battery",
-        title: "Low battery",
-        age: "3 hrs ago",
-        body: "Device 30141688 battery is at 11%. The device is expected to stop transmitting in approximately 18 hours. The customer appointed broker in Rio de Janeiro has been asked to swap the logger on arrival."
-      }
-    ],
-    legs: [
-      leg('218790112M', 'truck', 'WC DUBLIN', at(-1, '16:40', 'GMT'), A.clinigenIe, A.dub, 'done'),
-      leg('218790114M', 'plane', 'AER LINGUS CARGO · EI 178', at(-1, '21:05', 'GMT'), A.dub, A.lhr, 'done'),
-      leg('218790115M', 'plane', 'BRITISH AIRWAYS · BA 249', at(0, '07:30', 'BRT'), A.lhr, A.gig, 'current', 'Low battery'),
-      leg('218790118M', 'broker', 'CUSTOMER APPOINTED BROKER · CUSTOMS', at(2, '10:00', 'BRT'), A.gig, A.gig, 'pending'),
-      leg('218790121M', 'truck', 'CUSTOMER APPOINTED BROKER', at(2, '15:00', 'BRT'), A.gig, A.inca, 'pending'),
-    ]
-  },
-  {
     number: "261402288CL",
     client: "CLINIGEN HEALTHCARE LTD",
     clientShort: "CLINIGEN HEAL\u2026",
@@ -153,8 +116,8 @@ export const JOBS = [
     deliveryStatus: "At Risk",
     temp: "8\u00b0C",
     battery: "64%",
-    product: "PHARMACEUTICAL - FINISHED PRODUCT",
-    service: "Central Lab & Biostorage \u00b7 Critical tier",
+    product: "IMP - AZD-4573 50 MG VIALS - 2-8C",
+    service: "Clinical Supply Logistics \u00b7 Critical tier",
     tempRange: "2 C to 8 C Refrigerated",
     sensorId: "30141701",
     origin: [-0.46, 51.33],
@@ -196,8 +159,8 @@ export const JOBS = [
     deliveryStatus: "On Time",
     temp: "4\u00b0C",
     battery: "82%",
-    product: "PHARMACEUTICAL - FINISHED PRODUCT",
-    service: "Central Lab & Biostorage \u00b7 Optimised tier",
+    product: "IMP - LOT 24M311 - 2-8C",
+    service: "Clinical Supply Logistics \u00b7 Critical tier",
     tempRange: "2 C to 8 C Refrigerated",
     sensorId: "30141733",
     origin: [-0.46, 51.33],
@@ -259,42 +222,6 @@ export const JOBS = [
       leg('218788002M', 'truck', 'WC LONDON', at(0, '06:05', 'GMT'), A.wcLondon, A.lhr, 'done'),
       leg('218788004M', 'plane', 'LUFTHANSA CARGO · LH 8341', at(0, '21:40', 'CEST'), A.lhr, A.fra, 'current', 'Delay risk'),
       leg('218788007M', 'truck', 'WC FRANKFURT', at(1, '09:00', 'CEST'), A.fra, A.charite, 'pending'),
-    ]
-  },
-  {
-    number: "261410034CL",
-    client: "CLINIGEN HEALTHCARE LTD",
-    clientShort: "CLINIGEN HEAL\u2026",
-    destination: "Tata Memorial Hospital",
-    destShort: "Tata Memorial Hosp\u2026",
-    members: 2,
-    eta: `${fmtMonDay(daysFrom(3))}, 6 PM GMT+5:30`,
-    etaFull: `${fmtNumeric(daysFrom(3))} 18:00:00 IST`,
-    leg: 3,
-    deliveryStatus: "On Time",
-    temp: "6\u00b0C",
-    battery: "58%",
-    product: "PHARMACEUTICAL - FINISHED PRODUCT",
-    service: "Central Lab & Biostorage \u00b7 Optimised tier",
-    tempRange: "2 C to 8 C Refrigerated",
-    sensorId: "30141775",
-    origin: [-0.46, 51.33],
-    dest: [72.87, 19.07],
-    isOpenAlert: true,
-    issues: [
-      {
-        kind: "battery",
-        title: "Low battery",
-        age: "40 min ago",
-        body: "Device 30141775 battery is at 58% but is draining faster than expected (cold ambient at altitude). It will last the journey; no action required."
-      }
-    ],
-    legs: [
-      leg('218791501M', 'truck', 'WC LONDON', at(-1, '12:45', 'GMT'), A.clinigenUk, A.wcLondon, 'done'),
-      leg('218791503M', 'truck', 'WC LONDON', at(0, '05:20', 'GMT'), A.wcLondon, A.lhr, 'done'),
-      leg('218791504M', 'plane', 'BRITISH AIRWAYS · BA 139', at(1, '01:30', 'IST'), A.lhr, A.bom, 'current', 'Low battery'),
-      leg('218791507M', 'broker', 'WC MUMBAI · CUSTOMS', at(2, '16:00', 'IST'), A.bom, A.bom, 'pending'),
-      leg('218791510M', 'truck', 'WC MUMBAI', at(3, '18:00', 'IST'), A.wcMumbai, A.tata, 'pending'),
     ]
   },
   {

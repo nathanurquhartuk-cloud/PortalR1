@@ -36,41 +36,6 @@ export const KPI_SETS = {
       }
     ]
   },
-  "Central Lab Logistics": {
-    sub: "Study and site performance, sample integrity and collection reliability.",
-    subscribed: true,
-    metrics: [
-      ["Collection success", "98%", "Successful planned collections", true],
-      ["On-time lab delivery", "96%", "Before laboratory cut-off", true],
-      ["Site protocol adherence", "92%", "Logistics-related requirements", true],
-      ["At-risk samples", "7", "Active exceptions under review", false]
-    ],
-    bars: [84, 89, 91, 92, 94, 96, 98],
-    labels: ["Site collections", "On-time delivery", "Sample integrity", "Site adherence"],
-    vals: [98, 96, 99, 92],
-    detail: [
-      {
-        label: "Missed collections by site",
-        sub: "Drill down by study, site or shipment",
-        to: "/studies?study=AZ-ONC-301"
-      },
-      {
-        label: "Laboratory cut-off performance",
-        sub: "Audit-ready evidence when available",
-        to: "/tracking"
-      },
-      {
-        label: "Sample temperature exceptions",
-        sub: "Temperature of record per consignment",
-        to: "/analytics?page=coldchain"
-      },
-      {
-        label: "Site logistics compliance evidence",
-        sub: "Inspection pack by study",
-        to: "/studies"
-      }
-    ]
-  },
   Radiopharma: {
     sub: "Dose-level precision, route resilience and time-to-administration protection.",
     subscribed: true,
@@ -97,7 +62,7 @@ export const KPI_SETS = {
       {
         label: "Route and customs risk",
         sub: "Predictive risk by lane",
-        to: "/analytics?page=risk"
+        to: "/shipments/live"
       },
       {
         label: "Dose utilisation and cost per dose",
@@ -106,74 +71,4 @@ export const KPI_SETS = {
       }
     ]
   },
-  "Cell & Gene": {
-    sub: "Patient journeys, chain of identity, manufacturing handoffs and treatment timing.",
-    subscribed: false,
-    metrics: [
-      ["Journeys active", "28", "Patients / batches in motion", true],
-      ["Chain-of-identity checks", "99.6%", "Verified identity events", true],
-      ["Cryogenic exceptions", "2", "Specialist actions underway", false],
-      ["Treatment-window adherence", "96%", "Within required delivery window", true]
-    ],
-    bars: [90, 94, 92, 97, 98, 96, 99],
-    labels: ["Identity verification", "Custody handoffs", "Cryogenic compliance", "Treatment windows"],
-    vals: [99, 97, 98, 96],
-    detail: [
-      {
-        label: "Patient-specific journey milestones",
-        sub: "Available with the Cell & Gene bundle",
-        to: "/place-order?mode=quote&service=Cell%20%26%20Gene%20Therapies"
-      },
-      {
-        label: "Manufacturing release readiness",
-        sub: "Available with the Cell & Gene bundle",
-        to: "/place-order?mode=quote&service=Cell%20%26%20Gene%20Therapies"
-      },
-      {
-        label: "Identity and custody audit trail",
-        sub: "Available with the Cell & Gene bundle",
-        to: "/place-order?mode=quote&service=Cell%20%26%20Gene%20Therapies"
-      },
-      {
-        label: "Rescue intervention before treatment",
-        sub: "Available with the Cell & Gene bundle",
-        to: "/place-order?mode=quote&service=Cell%20%26%20Gene%20Therapies"
-      }
-    ]
-  },
-  "Commercial Logistics": {
-    sub: "OTIF, supply continuity, distributor visibility and cost-to-serve.",
-    subscribed: false,
-    metrics: [
-      ["OTIF performance", "97%", "On time and in full", true],
-      ["Delivery exceptions", "8", "Active cases", false],
-      ["Distribution lanes", "62", "Active lanes", true],
-      ["Invoice match rate", "96%", "Compared with agreements", true]
-    ],
-    bars: [88, 90, 94, 92, 95, 96, 97],
-    labels: ["OTIF", "Distributor delivery", "Temperature integrity", "Invoice assurance"],
-    vals: [97, 96, 99, 96],
-    detail: [
-      {
-        label: "Order-to-delivery milestones",
-        sub: "Available with Commercial Supply Logistics",
-        to: "/place-order?mode=quote&service=Commercial%20Supply%20Logistics"
-      },
-      {
-        label: "Customer and distributor POD",
-        sub: "Available with Commercial Supply Logistics",
-        to: "/place-order?mode=quote&service=Commercial%20Supply%20Logistics"
-      },
-      {
-        label: "Deviation and return trends",
-        sub: "Available with Commercial Supply Logistics",
-        to: "/place-order?mode=quote&service=Commercial%20Supply%20Logistics"
-      },
-      {
-        label: "Cost per distribution lane",
-        sub: "Available with Commercial Supply Logistics",
-        to: "/place-order?mode=quote&service=Commercial%20Supply%20Logistics"
-      }
-    ]
-  }
 }

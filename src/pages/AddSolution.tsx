@@ -14,7 +14,7 @@ export default function AddSolution() {
   return (
     <Page>
       <Link to="/solutions" className="row small" style={{ gap: 6, marginBottom: 14 }}><ArrowLeft size={14} />Solutions</Link>
-      <PageHead title="All services" sub="Choose a service line to add to your programme. We price the bundle against your MSA and return a firm quote within 4 hours." />
+      <PageHead title="All services" sub="Both Release 1 service lines are active on your programme. Pick one to extend it to new lanes, sites or add-ons; we price against your MSA and return a firm quote within 4 hours." />
       <div className="grid cols-2">
         {SERVICE_LINES.map((s) => (
           <button key={s.id} type="button" className={cx('choice', sel === s.id && 'on')} onClick={() => setSel(s.id)} style={{ alignItems: 'flex-start' }}>

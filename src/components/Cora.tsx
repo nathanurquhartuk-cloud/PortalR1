@@ -162,7 +162,7 @@ export default function Cora() {
     }
     if (/\brepeat\b.*\b(shipment|order|booking|job)\b|\b(same|another) (shipment|order) again\b|\bre-?order\b/.test(s)) {
       const orders = allOrders(created).filter((o) => o.kind !== 'Quote')
-      const svc = /radio/.test(s) ? 'Radiopharma' : /central|lab|biostor/.test(s) ? 'Central Lab' : /clinical|site|study/.test(s) ? 'Clinical Supply' : /cell|gene/.test(s) ? 'Cell & Gene' : ''
+      const svc = /radio/.test(s) ? 'Radiopharma' : 'Clinical Supply Logistics'
       const m = s.match(/from\s+([a-z\s]+?)\s+to\s+([a-z\s]+?)(?:$|[,.?!]|\s+on\b|\s+for\b)/)
       const key = (x: string) => x.trim().split(/\s+/).map((w) => w.slice(0, 4)).filter((w) => w.length > 2)
       const score = (o: Order) => (svc && o.serviceLine.toLowerCase().includes(svc.toLowerCase().split(' ')[0]) ? 2 : 0) + (m ? key(m[1]).filter((w) => o.route.toLowerCase().includes(w)).length + key(m[2]).filter((w) => o.route.toLowerCase().includes(w)).length * 2 : 0)
@@ -213,7 +213,7 @@ export default function Cora() {
     }
     if (/inventor|storage|stock|depot|lot|expir/.test(s)) return { text: 'Site 102 in Singapore has 4 days of IMP lot 24M204 left. Replenishment ORD-2026-011 is booked on the Optimised tier and collects tomorrow; upgrading to Critical lands it within 24 hours.', actions: [go('Review the replenishment', '/studies?site=Site%20102')] }
     if (/kpi|otif|performance|insight|analytic|report|how am i/.test(s)) return { text: 'Your OTIF for September was 97.6%, up 0.2 pp and above your 96% agreement target. Temperature compliance is 99.2% and you rank in the top 12% of shippers on the Cencora network.', actions: [go('Open Insights', '/insights')] }
-    if (/agreement|rate|solution|service line|bundle|add-?on/.test(s)) return { text: 'You have three active solutions: Radiopharma (Critical tier with Data Analytics), Central Lab Logistics (Optimised bundle, Critical available per shipment) and Clinical Supply Logistics (Critical and Optimised, selected per shipment). Rates, schedules and amendments are in Solutions.', actions: [go('Open Solutions', '/solutions'), go('Request a quote', '/book?mode=quote')] }
+    if (/agreement|rate|solution|service line|bundle|add-?on/.test(s)) return { text: 'You have two active solutions: Radiopharma (Critical tier with Data Analytics and Customs brokerage) and Clinical Supply Logistics (Critical and Optimised tiers, selected per shipment, with Customs brokerage). Rates, schedules and amendments are in Solutions.', actions: [go('Open Solutions', '/solutions'), go('Request a quote', '/book?mode=quote')] }
     if (/book|new shipment|quote|order/.test(s)) return { text: 'I can start a booking for you. Direct orders price from your rate card and confirm immediately; quotes are for new service lines, bundles or add-ons.', actions: [go('Book a shipment', '/book'), go('Request a quote', '/book?mode=quote')] }
     if (/support|case|help|how do i|tour|around/.test(s)) return { text: 'The workspace has seven areas: Overview, Shipments, Studies, Storage, Financials, Insights, Solutions and Documents. Search at the top finds any job, invoice, order, study or site reference. I can also open any page for you, or connect you to a specialist by chat, phone or call back.', actions: [go('Support and cases', '/support')] }
     if (/hello|hi\b|hey|thanks|thank you/.test(s)) return { text: `You are welcome, ${USER.first}. Anything else today?` }

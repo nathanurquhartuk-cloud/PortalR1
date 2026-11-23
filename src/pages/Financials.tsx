@@ -131,8 +131,7 @@ export default function Financials() {
             <div className="stack" style={{ gap: 14 }}>
               {[
                 ['Radiopharma', 92330],
-                ['Central Lab & Biostorage', 61710],
-                ['Clinical Supply Logistics', 16469],
+                ['Clinical Supply Logistics', 78179],
               ].map(([name, v]) => (
                 <div key={name as string}>
                   <div className="row between small" style={{ marginBottom: 6 }}><span className="strong">{name as string}</span><span className="muted mono">{money(v as number)}</span></div>

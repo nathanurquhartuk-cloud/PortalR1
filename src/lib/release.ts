@@ -2,6 +2,10 @@
 // Scope follows the Release 1 slide. Anything switched off here stays in the codebase for later releases.
 export const RELEASE = { name: 'Release 1', label: 'Thin slice · fully connected' }
 
+// Service lines in Release 1
+export const ACTIVE_LINES = ['Radiopharma', 'Clinical Supply Logistics'] as const
+export const isActiveLine = (name: string) => /radiopharma|clinical supply/i.test(name)
+
 export const FEATURES = {
   storage: false,          // Depot and inventory: out of scope for Release 1
   recommended: false,      // Service upsell catalogue on the Overview: later release

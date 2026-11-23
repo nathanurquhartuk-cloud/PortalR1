@@ -11,16 +11,6 @@ export const DOCUMENTS = [
     version: "v3.0"
   },
   {
-    id: "SCH-1",
-    title: "Central Lab Logistics & Biostorage schedule",
-    service: "Central Lab Logistics & Biostorage",
-    kind: "Schedule",
-    effective: "15 Mar 2026",
-    status: "Renewal review",
-    version: "v1.2",
-    agreementId: "centrallab"
-  },
-  {
     id: "SCH-2",
     title: "Radiopharma service specification",
     service: "Radiopharma",

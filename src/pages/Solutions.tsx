@@ -21,7 +21,7 @@ export default function Solutions() {
     <Page>
       <PageHead title="Explore Solutions" sub="More ways to simplify your healthcare supply chain." tools={<><Button variant="secondary" onClick={downloadRateCardPdf} icon={<Download size={16} />}>Rate card</Button><Button to="/book?mode=quote">Request a quote</Button></>} />
 
-      <div className="tip"><Sparkles size={16} />Already moving laboratory samples? We can help with more of your study. <button className="link" style={{ fontStyle: 'normal', marginLeft: 4 }} onClick={() => openCora('What else can you help with for my studies?')}>Ask Cora</button><a href="#/add-service" style={{ marginLeft: 'auto', fontStyle: 'normal', fontWeight: 600 }}>View all services <ArrowRight size={14} style={{ verticalAlign: -2 }} /></a></div>
+      <div className="tip"><Sparkles size={16} />Opening new sites? We can qualify the lane and set up brokerage before first patient in. <button className="link" style={{ fontStyle: 'normal', marginLeft: 4 }} onClick={() => openCora('What else can you help with for my studies?')}>Ask Cora</button><a href="#/add-service" style={{ marginLeft: 'auto', fontStyle: 'normal', fontWeight: 600 }}>View all services <ArrowRight size={14} style={{ verticalAlign: -2 }} /></a></div>
 
       <Section title="Your active solutions" action={<span className="small muted">{SCHEDULES.length} schedules under MSA-AZ-2026 v3.0 · <a href="#/documents?kind=commercial">Document library</a></span>}>
         <div className="stack" style={{ gap: 14 }}>

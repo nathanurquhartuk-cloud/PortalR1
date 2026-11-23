@@ -19,21 +19,6 @@ export const SERVICE_LINES = [
     ]
   },
   {
-    id: "centrallab",
-    name: "Central Lab Logistics & Biostorage",
-    short: "Central Lab",
-    description: "Biosample logistics and integrated biostorage",
-    active: true,
-    tiers: ["Critical tier (30-min response)", "Optimised tier (2-hr response)"],
-    capabilities: [
-      "Sample collection and transport",
-      "Biorepository and biostorage",
-      "Ambient, frozen, cryogenic",
-      "Global lab network support",
-      "Integrated visibility"
-    ]
-  },
-  {
     id: "clinical",
     name: "Clinical Supply Logistics",
     short: "Clinical Supply",
@@ -50,62 +35,6 @@ export const SERVICE_LINES = [
       "Temperature-controlled transport",
       "Global regulatory expertise",
       "Returns and destruction"
-    ]
-  },
-  {
-    id: "cellgene",
-    name: "Cell & Gene Therapies",
-    short: "Cell & Gene",
-    description: "Autonomous, allogeneic and emerging therapies",
-    active: false,
-    capabilities: [
-      "Cryogenic and ultra-low temp",
-      "Chain of identity and custody",
-      "Patient-centric logistics",
-      "Genetic information",
-      "Specialist handling"
-    ]
-  },
-  {
-    id: "warehouse",
-    name: "Warehouse",
-    short: "Warehouse",
-    description: "Storage, inventory management and fulfillment solutions",
-    active: false,
-    capabilities: [
-      "Secure storage (ambient/frozen)",
-      "Inventory management",
-      "Receipt, pick, pack and ship",
-      "Returns and destruction",
-      "Integration with supply logistics"
-    ]
-  },
-  {
-    id: "commercial",
-    name: "Commercial Supply Logistics",
-    short: "Commercial",
-    description: "Logistics for commercial healthcare products",
-    active: false,
-    capabilities: [
-      "Finished goods distribution",
-      "Regulated and non-regulated products",
-      "Temperature-controlled",
-      "Global network and compliance",
-      "Time-critical and charter"
-    ]
-  },
-  {
-    id: "specialty",
-    name: "Specialty Logistics",
-    short: "Specialty",
-    description: "Complex, high-value and specialized commodities",
-    active: false,
-    capabilities: [
-      "Medical devices and equipment",
-      "Biological materials (>CAD)",
-      "Aerospace, aircraft parts",
-      "Time-critical and charter",
-      "Project and event logistics"
     ]
   }
 ]

@@ -38,7 +38,7 @@ export const CASES = [
     id: "SUP-2026-038",
     topic: "Quotation / feasibility",
     reference: "QUO-2026-015",
-    summary: "Cell & Gene Therapies bundle \u00b7 feasibility and lane qualification",
+    summary: "Clinical Supply Logistics bundle \u00b7 cryogenic lane feasibility and qualification",
     owner: "James T. \u00b7 account director",
     opened: "Last week",
     updated: "2 days ago",

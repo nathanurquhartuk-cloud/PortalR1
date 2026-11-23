@@ -3,21 +3,9 @@ import { daysFrom, fmtDayMonth, today } from '../lib/dates'
 
 export const ORDERS = [
   {
-    id: "QUO-2026-014",
-    kind: "Quote",
-    serviceLine: "Central Lab & Biostorage",
-    tier: "Critical",
-    route: "Dublin \u2192 Rio de Janeiro (INCA)",
-    status: "Quote ready",
-    when: `Quoted ${fmtDayMonth(daysFrom(-1))}`,
-    value: "$14,200",
-    expires: `Valid until ${fmtDayMonth(daysFrom(29))}`,
-    note: "Bundle change \u00b7 Critical tier bundle for frozen programme \u00b7 20 consignments"
-  },
-  {
     id: "QUO-2026-015",
     kind: "Quote",
-    serviceLine: "Cell & Gene Therapies",
+    serviceLine: "Clinical Supply Logistics",
     tier: "Critical",
     addOns: ["Chain of identity", "Cryogenic dry shipper"],
     route: "Boston \u2192 London (Royal Free)",
@@ -109,7 +97,7 @@ export const ORDERS = [
   {
     id: "ORD-2026-008",
     kind: "Direct",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     addOns: ["Customs brokerage"],
     tier: "Critical",
     route: "London \u2192 Universidade Estadual de Campinas",
@@ -132,29 +120,6 @@ export const ORDERS = [
     jobNumber: "261408871CL"
   },
   {
-    id: "ORD-2026-006",
-    kind: "Direct",
-    serviceLine: "Central Lab & Biostorage",
-    tier: "Optimised",
-    route: "London \u2192 Tata Memorial Hospital, Mumbai",
-    status: "In Transit",
-    when: `ETA ${fmtDayMonth(daysFrom(3))}, 6 PM`,
-    value: "$6,420",
-    jobNumber: "261410034CL"
-  },
-  {
-    id: "ORD-2026-002",
-    kind: "Direct",
-    serviceLine: "Central Lab & Biostorage",
-    tier: "Optimised",
-    route: "Dublin \u2192 Instituto Nacional do Cancer (INCA)",
-    status: "In Transit",
-    when: `ETA ${fmtDayMonth(daysFrom(2))}, 3 PM`,
-    value: "$12,450",
-    jobNumber: "261416022CL",
-    note: "Logger low battery \u00b7 swap arranged"
-  },
-  {
     id: "ORD-2026-003",
     kind: "Direct",
     serviceLine: "Radiopharma",
@@ -170,7 +135,7 @@ export const ORDERS = [
   {
     id: "ORD-2026-005",
     kind: "Direct",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     addOns: ["Customs brokerage"],
     tier: "Optimised",
     route: "London \u2192 Hospital Israelita Albert Einstein",
@@ -194,9 +159,9 @@ export const ORDERS = [
   {
     id: "ORD-2026-000",
     kind: "Direct",
-    serviceLine: "Central Lab & Biostorage",
+    serviceLine: "Clinical Supply Logistics",
     tier: "Critical",
-    route: "Amsterdam \u2192 Frankfurt biorepository",
+    route: "Amsterdam \u2192 Frankfurt clinical depot",
     status: "Delivered",
     when: "Delivered 12 Sep",
     value: "$3,140",

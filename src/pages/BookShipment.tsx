@@ -46,7 +46,7 @@ export default function BookShipment() {
           <span className="icon-wrap ok lg" style={{ margin: '0 auto 16px' }}><Check size={24} /></span>
           <h1 style={{ fontSize: 26 }}>{mode === 'quote' ? 'Quote requested' : 'Shipment booked'}</h1>
           <p className="muted" style={{ marginTop: 8 }}>
-            {mode === 'quote' ? `Reference ${done}. CPQ prices the request against your MSA and returns a firm quote within 4 hours, valid for 30 days.` : `Reference ${done}. Priced from your rate card${rate ? ` at $${rate}` : ''}, confirmed immediately and visible in Shipments with a job number within minutes.`}
+            {mode === 'quote' ? `Reference ${done}. CPQ prices the request against your rate card and returns a firm quote within 4 hours, valid for 30 days.` : `Reference ${done}. Priced from your rate card${rate ? ` at $${rate}` : ''}, confirmed immediately and visible in Shipments with a job number within minutes.`}
           </p>
           <div className="row" style={{ justifyContent: 'center', gap: 10, marginTop: 24 }}>
             <Button to="/shipments">Go to Shipments</Button>
@@ -133,7 +133,7 @@ export default function BookShipment() {
             <Button type="submit" block>{mode === 'quote' ? 'Request quote' : 'Confirm booking'}</Button>
             <Button variant="ghost" block onClick={() => openCora(`Help me ${mode === 'quote' ? 'request a quote' : 'book a shipment'} for ${service}`)}>Ask Cora for help</Button>
           </div>
-          <div className="tiny faint" style={{ marginTop: 12 }}>Approved commercial terms in your MSA govern pricing. Nothing is booked until you confirm.</div>
+          <div className="tiny faint" style={{ marginTop: 12 }}>Approved rates on your signed rate card govern pricing. Nothing is booked until you confirm.</div>
         </aside>
       </form>
     </Page>

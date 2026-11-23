@@ -2,15 +2,6 @@
 
 export const DOCUMENTS = [
   {
-    id: "MSA-AZ-2026",
-    title: "Master Service Agreement",
-    service: "All service lines",
-    kind: "MSA",
-    effective: "15 Mar 2026",
-    status: "Active",
-    version: "v3.0"
-  },
-  {
     id: "SCH-2",
     title: "Radiopharma service specification",
     service: "Radiopharma",
@@ -39,6 +30,26 @@ export const DOCUMENTS = [
     status: "Active",
     version: "v1.0",
     agreementId: "radiopharma"
+  },
+  {
+    id: "RC-2026-RP",
+    rateCardFor: "radiopharma",
+    title: "Radiopharma rate card 2026/27",
+    service: "Radiopharma",
+    kind: "Rate card",
+    effective: "1 Oct 2026",
+    status: "Active",
+    version: "v2026.2"
+  },
+  {
+    id: "RC-2026-CS",
+    rateCardFor: "clinical",
+    title: "Clinical Supply Logistics rate card 2026/27",
+    service: "Clinical Supply Logistics",
+    kind: "Rate card",
+    effective: "1 Oct 2026",
+    status: "Active",
+    version: "v2026.2"
   },
   {
     id: "RC-2026",

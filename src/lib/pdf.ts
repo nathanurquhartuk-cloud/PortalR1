@@ -98,25 +98,46 @@ export async function downloadSchedulePdf(s: Schedule) {
   block(doc, 14, y, 'Surcharges and pass-through', s.surcharges)
   y += 8 + s.surcharges.length * 5
   block(doc, 14, y, 'Amendments', s.amendments.map((a) => `${a.date} | ${a.title} | ${a.by}`))
-  footer(doc, 'Illustrative schedule generated from the Customer Workspace future-state vision. The signed MSA governs.')
+  footer(doc, 'Illustrative schedule generated from the Customer Workspace future-state vision. The signed rate card governs.')
   doc.save(`${s.reference.replace(/\s+/g, '-')}.pdf`)
 }
 
-export async function downloadRateCardPdf() {
+export async function downloadRateCardPdf(only?: Schedule) {
   const { jsPDF, autoTable } = await pdfLibs()
   const doc = new jsPDF()
-  header(doc, 'Rate card 2026/27', 'All schedules')
+  header(doc, 'Rate card 2026/27', only ? T(only.name) : 'All schedules')
   block(doc, 14, 38, 'Account', [USER.legalEntity, `Customer ${USER.customerNo}`, 'Approved terms drive quoting and invoice assurance automatically'])
   let y = 56
-  for (const s of SCHEDULES) {
+  for (const s of only ? [only] : SCHEDULES) {
     doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.text(T(s.name), 14, y); doc.setFont('helvetica', 'normal')
     autoTable(doc, { startY: y + 3, head: [['Item', 'Tier', `Rate (${s.currency})`, 'Unit']], body: s.rates.map((r) => [T(r.item), r.tier, r.rate, r.unit]), headStyles: { fillColor: PURPLE }, styles: { fontSize: 8.5 } })
     y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 12
     if (y > 240) { doc.addPage(); y = 20 }
   }
   footer(doc, 'Illustrative rate card generated from the Customer Workspace future-state vision.')
-  doc.save('rate-card-2026-27.pdf')
+  doc.save(only ? `rate-card-${only.id}-2026-27.pdf` : 'rate-card-2026-27.pdf')
 }
+
+// Quotation attached to an order (or the quote itself for a quote-kind order)
+export async function downloadQuotePdf(o: QuoteOrder) {
+  const { jsPDF, autoTable } = await pdfLibs()
+  const doc = new jsPDF()
+  const ref = o.kind === 'Quote' ? o.id : (o.quoteRef || `QUO-${o.id.replace('ORD-', '')}`)
+  header(doc, 'Quotation', ref)
+  block(doc, 14, 38, 'Prepared for', [USER.legalEntity, `Customer ${USER.customerNo}`, USER.email])
+  block(doc, 110, 38, 'Quotation details', [`Reference ${ref}`, o.kind === 'Quote' ? `Valid ${o.expires || '30 days'}` : `Accepted as order ${o.id}`, `Service ${T(o.serviceLine)} | ${o.tier} tier`])
+  block(doc, 14, 66, 'Lane and scope', [T(o.route), `${(o.addOns || []).length ? 'Add-ons: ' + o.addOns!.join(', ') : 'No add-ons'}${o.study ? ' | Study ' + T(o.study) : ''}`])
+  const total = Number(String(o.value).replace(/[^0-9.]/g, '')) || 0
+  const extras = (o.changes || []).filter((c) => c.cost).map((c) => [T(c.title), T(c.detail), c.cost!])
+  const base = Math.round(total * 0.82), addons = (o.addOns || []).length ? Math.round(total * 0.18) : 0
+  const body = [[`${T(o.serviceLine)} | ${o.tier} tier`, T(o.route), money(base)], ...(addons ? [['Add-ons', o.addOns!.join(', '), money(addons)]] : []), ...extras]
+  autoTable(doc, { startY: 84, head: [['Item', 'Detail', 'Amount (USD)']], body, foot: [['', 'Quoted total (excl. extras)', money(total)]], headStyles: { fillColor: PURPLE }, footStyles: { fillColor: [247, 247, 250], textColor: 20 }, styles: { fontSize: 9 } })
+  const y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10
+  block(doc, 14, y, 'Terms', ['Priced against your signed rate card; a rate can never be applied that is not on it.', 'Extras added in transit (for example dry ice replenishment) are listed above and invoiced at the agreed rate.'])
+  footer(doc, 'Illustrative quotation generated from the Customer Workspace future-state vision. Not a live commercial record.')
+  doc.save(`${ref}.pdf`)
+}
+type QuoteOrder = { id: string; kind: string; serviceLine: string; tier: string; route: string; value: string; addOns?: string[]; study?: string; expires?: string; quoteRef?: string; changes?: { title: string; detail: string; cost?: string }[] }
 
 export async function downloadPodPdf(job: Job) {
   const { jsPDF, autoTable } = await pdfLibs()

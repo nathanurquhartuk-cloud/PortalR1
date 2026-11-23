@@ -5,7 +5,6 @@ import { SpecialistOptions, ACCOUNT_TEAM } from '../components/SpecialistContact
 import { Button, Expand, Page, PageHead, Pill, Progress, Section, statusTone } from '../components/ui'
 import { DOCUMENTS } from '../data/documents'
 import { SCHEDULES } from '../data/schedules'
-import { SERVICE_LINES } from '../data/serviceLines'
 import { openCora } from '../lib/notifications'
 import { downloadRateCardPdf, downloadSchedulePdf } from '../lib/pdf'
 
@@ -23,7 +22,7 @@ export default function Solutions() {
 
       <div className="tip"><Sparkles size={16} />Opening new sites? We can qualify the lane and set up brokerage before first patient in. <button className="link" style={{ fontStyle: 'normal', marginLeft: 4 }} onClick={() => openCora('What else can you help with for my studies?')}>Ask Cora</button><a href="#/add-service" style={{ marginLeft: 'auto', fontStyle: 'normal', fontWeight: 600 }}>View all services <ArrowRight size={14} style={{ verticalAlign: -2 }} /></a></div>
 
-      <Section title="Your active solutions" action={<span className="small muted">{SCHEDULES.length} schedules under MSA-AZ-2026 v3.0 · <a href="#/documents?kind=commercial">Document library</a></span>}>
+      <Section title="Your active solutions" action={<span className="small muted">{SCHEDULES.length} schedules · <a href="#/documents?kind=commercial">Document library</a></span>}>
         <div className="stack" style={{ gap: 14 }}>
           {SCHEDULES.map((s) => {
             const tone = s.utilisation > 110 ? 'warn' : s.utilisation > 80 ? 'ok' : undefined
@@ -75,12 +74,12 @@ export default function Solutions() {
         </div>
       </Section>
 
-      <Section title="Documents and commercial commitments">
+      <Section title="Rate cards" action={<span className="small muted">Approved rates drive quoting and invoice assurance</span>}>
         <div className="card" style={{ overflow: 'hidden' }}>
-          {DOCUMENTS.map((d) => {
-            const sched = SCHEDULES.find((s) => s.id === (d as { agreementId?: string }).agreementId)
+          {DOCUMENTS.filter((d) => d.kind === 'Rate card').map((d) => {
+            const sched = SCHEDULES.find((s) => s.id === (d as { rateCardFor?: string }).rateCardFor)
             return (
-              <button key={d.id} className="list-row click" style={{ width: '100%', textAlign: 'left', font: 'inherit', background: 'none', border: 'none', borderTop: '1px solid var(--line-soft)' }} onClick={() => (sched ? downloadSchedulePdf(sched) : downloadRateCardPdf())}>
+              <button key={d.id} className="list-row click" style={{ width: '100%', textAlign: 'left', font: 'inherit', background: 'none', border: 'none', borderTop: '1px solid var(--line-soft)' }} onClick={() => downloadRateCardPdf(sched)}>
                 <span className="icon-wrap"><FileText size={18} /></span>
                 <div className="grow"><div className="title">{d.title}</div><div className="meta">{d.kind} · {d.service} · effective {d.effective} · {d.version}</div></div>
                 <Pill tone={statusTone(d.status)}>{d.status}</Pill>
@@ -89,14 +88,14 @@ export default function Solutions() {
             )
           })}
         </div>
-        <div className="small muted" style={{ marginTop: 10 }}>Permissions, approved commercial terms and amendments govern what each user can see; a rate can never be applied that is not in a signed schedule.</div>
+        <div className="small muted" style={{ marginTop: 10 }}>A rate can never be applied that is not on a signed rate card. Schedules and addenda are in the Document library.</div>
       </Section>
 
       <Section>
         <div className="card pad" style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
           <MessageSquare size={20} className="purple" />
-          <span className="strong">Looking for a different solution?</span>
-          <span className="muted">We can shape a bundle across {SERVICE_LINES.filter((s) => !s.active).length} further service lines.</span>
+          <span className="strong">Opening a new lane or site?</span>
+          <span className="muted">We qualify the lane, set up brokerage and price it against your rate card before first shipment.</span>
           <span style={{ marginLeft: 'auto' }}><Button variant="secondary" size="sm" onClick={() => setSpec(!spec)}>Talk to a specialist</Button></span>
         </div>
         {spec && <div style={{ marginTop: 12 }}><SpecialistOptions team={ACCOUNT_TEAM} compact onDone={() => setSpec(false)} /></div>}

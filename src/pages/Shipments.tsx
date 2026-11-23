@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowRight, Battery, ClipboardCheck, Clock, Download, FileText, MapPin, Package, Plane, Search, Ship, Thermometer, Truck } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Battery, ClipboardCheck, Clock, Download, FileText, MapPin, Package, Plane, Search, Ship, Snowflake, Thermometer, Truck } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { SpecialistOptions } from '../components/SpecialistContact'
@@ -9,9 +9,10 @@ import { JOBS, REROUTED_261408871CL } from '../data/jobs'
 import { useLive } from '../lib/live'
 import { STATUS_LABEL, STATUS_TONE, docsOk, needsYou, nextAction, useBrokerage } from '../lib/brokerage'
 import { capaForJob } from '../data/capas'
-import { Order as StoreOrder, allOrders, useOrders } from '../lib/orders'
+import { Order as StoreOrder, OrderChange, allOrders, useOrders } from '../lib/orders'
 import { fmtDayMonthYear } from '../lib/dates'
-import { downloadInvoicePdf, downloadPodPdf, downloadTemperaturePdf, invoiceTotal } from '../lib/pdf'
+import { downloadInvoicePdf, downloadPodPdf, downloadQuotePdf, downloadTemperaturePdf, invoiceTotal } from '../lib/pdf'
+import { statusOf, useChanges } from '../lib/changes'
 
 type Order = StoreOrder
 type Job = (typeof JOBS)[number]
@@ -143,6 +144,11 @@ export default function Shipments({ live = false }: { live?: boolean }) {
 }
 
 function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => void }) {
+  const { decisions, decide } = useChanges()
+  const changes: OrderChange[] = ((o.changes || []) as OrderChange[]).map((c) => ({ ...c, status: statusOf(c, decisions) }))
+  const extrasTotal = changes.filter((c) => c.cost && (c.status === 'Completed' || c.status === 'Approved')).reduce((a, c) => a + Number(c.cost!.replace(/[^0-9.]/g, '')), 0)
+  const pendingChange = changes.some((c) => c.status === 'Awaiting your approval')
+  const openChanges = new URLSearchParams(window.location.hash.split('?')[1] || '').get('changes') === '1'
   const firedAt = useLive((s) => s.firedAt)
   const brk = useBrokerage((s) => s.shipments.find((x) => x.job === o.jobNumber))
   const j0 = jobFor(o) as Job | undefined
@@ -161,7 +167,7 @@ function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => vo
       </>}>
       {spec && <div style={{ margin: '14px 0 4px' }}><SpecialistOptions compact onDone={() => setSpec(false)} /></div>}
       <div className="card pad tint" style={{ margin: '14px 0 4px', padding: '14px 16px' }}>
-        <div className="row between"><span className="strong">{o.when}</span><span className="strong mono">{o.value}</span></div>
+        <div className="row between"><span className="strong">{o.when}</span><span className="strong mono">{o.value}{extrasTotal > 0 && <span className="small muted" style={{ fontWeight: 400 }}> + ${extrasTotal} extras</span>}</span></div>
         <div className="muted small" style={{ marginTop: 4 }}>{o.note}</div>
         {o.expires && <div className="small amber" style={{ marginTop: 4 }}>{o.expires}</div>}
       </div>
@@ -177,6 +183,29 @@ function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => vo
           <div style={{ marginTop: 10 }}><Button size="sm" variant={needsYou(brk) ? 'primary' : 'soft'} to={`/brokerage/${brk.job}`} icon={<ArrowRight size={15} />}>{nextAction(brk).cta || 'Open in Brokerage'}</Button></div>
         </Expand>
       )}
+      {changes.length > 0 && (
+        <Expand title={`Changes and extras · ${changes.length}`} open={pendingChange || openChanges} right={pendingChange ? <Pill tone="warn" dot>Awaiting your approval</Pill> : <Pill tone="ok">{`$${extrasTotal} extras`}</Pill>}>
+          <div className="stack">
+            {changes.map((c) => (
+              <div key={c.id} className={`card pad change ${c.status === 'Awaiting your approval' ? 'pending' : ''}`} style={{ padding: '12px 14px' }}>
+                <div className="row between" style={{ gap: 10, alignItems: 'flex-start' }}>
+                  <div className="row" style={{ gap: 10 }}><span className="icon-wrap info" style={{ width: 32, height: 32, borderRadius: 10 }}><Snowflake size={15} /></span><div><div className="strong small">{c.title}{c.cost ? <span className="mono muted" style={{ fontWeight: 500 }}> · {c.cost}</span> : null}</div><div className="tiny muted">{c.kind === 'extra' ? 'Extra' : 'Amendment'} · {c.by} · {c.at}</div></div></div>
+                  <Pill tone={c.status === 'Completed' || c.status === 'Approved' ? 'ok' : c.status === 'Declined' ? undefined : 'warn'} dot={c.status === 'Awaiting your approval'}>{c.status}</Pill>
+                </div>
+                <div className="small" style={{ marginTop: 8 }}>{c.detail}</div>
+                {c.status === 'Awaiting your approval' && (
+                  <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                    <Button size="xs" onClick={() => decide(c, o.id, o.jobNumber, 'Approved')}>Approve {c.cost}</Button>
+                    <Button size="xs" variant="ghost" onClick={() => decide(c, o.id, o.jobNumber, 'Declined')}>Decline</Button>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="tiny faint">Changes made in transit are shown here as they happen and reach you as a notification. Approved extras are invoiced at your agreed rate.</div>
+          </div>
+        </Expand>
+      )}
+
       {j && (
         <Expand title={`Tracking · leg ${j.leg} of ${j.legs.length}`} open={!delivered} right={<Pill tone={statusTone(j.deliveryStatus)}>{j.deliveryStatus}</Pill>}>
           <div className="muted small" style={{ marginBottom: 12 }}>ETA {j.eta} · {j.product}</div>
@@ -189,6 +218,7 @@ function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => vo
                   <span className={`dot ${l.status === 'done' ? 'green' : ''}`} style={l.status === 'pending' ? { background: 'var(--line)' } : undefined} />
                   <span className="when">{l.status === 'done' ? '' : l.status === 'current' ? 'ETA ' : 'Planned '}{l.eta}</span>
                   <div className="t row" style={{ gap: 8 }}>{modeIcon(l.mode)}{l.provider} <span className="faint" style={{ fontWeight: 400 }}>· {l.id}</span>{l.issue ? <span className="red small" style={{ fontWeight: 500 }}>· {l.issue}</span> : null}{current ? <span className="purple small" style={{ fontWeight: 500 }}>· current leg</span> : null}</div>
+                  {(l as { note?: string }).note && <div className="leg-note"><Snowflake size={12} />{(l as { note?: string }).note}</div>}
                   <div className="leg-stop"><span className="lbl">{l.from === l.to ? 'At' : 'From'}</span><span><span className="name">{fromName}</span>{fromAddr && <span className="addr">{fromAddr}</span>}</span></div>
                   {l.from !== l.to && <div className="leg-stop"><span className="lbl">To</span><span><span className="name">{toName}</span>{toAddr && <span className="addr">{toAddr}</span>}</span></div>}
                 </div>
@@ -223,10 +253,11 @@ function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => vo
 
       <Expand title="Documents">
         <div className="stack">
+          <button className="list-row click" style={{ border: '1px solid var(--line)', borderRadius: 12, background: 'var(--surface)', width: '100%', textAlign: 'left', font: 'inherit' }} onClick={() => downloadQuotePdf({ ...o, changes })}><span className="icon-wrap"><FileText size={18} /></span><div className="grow"><div className="title">{o.kind === 'Quote' ? `Quotation ${o.id}` : `Quotation ${o.quoteRef || `QUO-${o.id.replace('ORD-', '')}`}`}</div><div className="meta">{o.kind === 'Quote' ? `Valid ${o.expires || '30 days'} · ${o.value}` : `Accepted as ${o.id} · ${o.value}${extrasTotal ? ` + $${extrasTotal} extras` : ''}`}</div></div><Download size={16} className="faint" /></button>
           {inv && <button className="list-row click" style={{ border: '1px solid var(--line)', borderRadius: 12, background: 'var(--surface)', width: '100%', textAlign: 'left', font: 'inherit' }} onClick={() => downloadInvoicePdf(inv)}><FileText size={18} className="purple" /><span className="grow"><span className="title">{inv.number} · {inv.type}</span><span className="meta"> {inv.status} · ${invoiceTotal(inv).total.toLocaleString('en-US')} · due {fmtDayMonthYear(inv.due)}</span></span><Download size={16} className="faint" /></button>}
           {inv && inv.temperature && <button className="list-row click" style={{ border: '1px solid var(--line)', borderRadius: 12, background: 'var(--surface)', width: '100%', textAlign: 'left', font: 'inherit' }} onClick={() => downloadTemperaturePdf(inv)}><Thermometer size={18} className="purple" /><span className="grow"><span className="title">Temperature of record</span><span className="meta"> Logger {inv.temperature.sensor} · {inv.temperature.result}</span></span><Download size={16} className="faint" /></button>}
           {delivered && j && <button className="list-row click" style={{ border: '1px solid var(--line)', borderRadius: 12, background: 'var(--surface)', width: '100%', textAlign: 'left', font: 'inherit' }} onClick={() => downloadPodPdf(j)}><Package size={18} className="purple" /><span className="grow"><span className="title">Proof of delivery</span><span className="meta"> Signed on delivery · {j.eta}</span></span><Download size={16} className="faint" /></button>}
-          {!inv && !delivered && <div className="muted small">Documents appear here as the shipment progresses: booking confirmation, temperature of record, proof of delivery and the invoice.</div>}
+          {!inv && !delivered && <div className="muted small">More documents appear as the shipment progresses: temperature of record, proof of delivery and the invoice.</div>}
         </div>
       </Expand>
 

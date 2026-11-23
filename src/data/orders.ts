@@ -16,6 +16,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-016",
+    quoteRef: "QUO-2026-116",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Critical",
@@ -30,6 +31,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-015",
+    quoteRef: "QUO-2026-115",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
@@ -43,6 +45,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-014",
+    quoteRef: "QUO-2026-114",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
@@ -53,10 +56,14 @@ export const ORDERS = [
     when: `Pick-up ${fmtDayMonth(daysFrom(2))}`,
     value: "$3,120",
     jobNumber: "261425490CL",
-    note: "Customs documents outstanding"
+    note: "Frozen IMP returns \u00b7 dry ice top-up awaiting your approval",
+    changes: [
+      { id: "chg-014-1", at: `${fmtDayMonth(daysFrom(0))} 09:20`, kind: "extra", title: "Dry ice replenishment", detail: "+8 kg recommended before departure from Singapore so the frozen IMP returns stay below \u221215 \u00b0C through the LHR connection and customs.", cost: "$70", by: "WC Singapore \u00b7 operations", status: "Awaiting your approval" },
+    ]
   },
   {
     id: "ORD-2026-012",
+    quoteRef: "QUO-2026-112",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Critical",
@@ -70,6 +77,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-011",
+    quoteRef: "QUO-2026-111",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",
@@ -83,6 +91,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-009",
+    quoteRef: "QUO-2026-109",
     kind: "Direct",
     serviceLine: "Radiopharma",
     tier: "Critical",
@@ -96,6 +105,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-008",
+    quoteRef: "QUO-2026-108",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     addOns: ["Customs brokerage"],
@@ -109,6 +119,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-007",
+    quoteRef: "QUO-2026-107",
     kind: "Direct",
     serviceLine: "Radiopharma",
     tier: "Critical",
@@ -117,10 +128,14 @@ export const ORDERS = [
     status: "In Transit",
     when: `ETA ${fmtDayMonth(daysFrom(1))}, 9 AM`,
     value: "$12,310",
-    jobNumber: "261408871CL"
+    jobNumber: "261408871CL",
+    changes: [
+      { id: "chg-007-1", at: `${fmtDayMonth(daysFrom(0))} 05:50`, kind: "extra", title: "Dry ice replenishment", detail: "+6 kg dry ice added at the Byfleet hub ahead of the Berlin departure; shipper now holds beyond the delivery window.", cost: "$60", by: "WC London \u00b7 control tower", status: "Completed" },
+    ]
   },
   {
     id: "ORD-2026-003",
+    quoteRef: "QUO-2026-103",
     kind: "Direct",
     serviceLine: "Radiopharma",
     tier: "Critical",
@@ -134,6 +149,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-005",
+    quoteRef: "QUO-2026-105",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     addOns: ["Customs brokerage"],
@@ -142,10 +158,16 @@ export const ORDERS = [
     status: "Booked",
     when: `Pick-up ${fmtDayMonth(daysFrom(2))}`,
     value: "$7,980",
-    jobNumber: "261405510CL"
+    jobNumber: "261405510CL",
+    note: "Frozen IMP on dry ice \u00b7 replenished at LHR",
+    changes: [
+      { id: "chg-005-1", at: `${fmtDayMonth(daysFrom(0))} 04:30`, kind: "extra", title: "Dry ice replenishment", detail: "+12 kg dry ice added at Heathrow before departure to hold the frozen lot through the GRU connection.", cost: "$95", by: "WC London \u00b7 control tower", status: "Completed" },
+      { id: "chg-005-2", at: `${fmtDayMonth(daysFrom(0))} 04:35`, kind: "extra", title: "Dry ice top-up at GRU", detail: "+8 kg planned on arrival at S\u00e3o Paulo during customs clearance, within the agreed dry ice rate.", cost: "$70", by: "WC S\u00e3o Paulo \u00b7 operations", status: "Approved" },
+    ]
   },
   {
     id: "ORD-2026-001",
+    quoteRef: "QUO-2026-101",
     kind: "Direct",
     serviceLine: "Radiopharma",
     tier: "Critical",
@@ -158,6 +180,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-000",
+    quoteRef: "QUO-2026-100",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Critical",
@@ -169,6 +192,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-004",
+    quoteRef: "QUO-2026-104",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Critical",
@@ -182,6 +206,7 @@ export const ORDERS = [
   },
   {
     id: "ORD-2026-010",
+    quoteRef: "QUO-2026-110",
     kind: "Direct",
     serviceLine: "Clinical Supply Logistics",
     tier: "Optimised",

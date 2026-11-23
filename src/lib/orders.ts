@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { ORDERS } from '../data/orders'
 
-export type Order = (typeof ORDERS)[number] & { jobNumber?: string; study?: string; addOns?: string[]; expires?: string; windows?: { pickup: string; delivery: string }; packaging?: string; handling?: string; repeatOf?: string }
+export interface OrderChange { id: string; at: string; kind: 'extra' | 'amendment'; title: string; detail: string; cost?: string; by: string; status: 'Completed' | 'Approved' | 'Awaiting your approval' | 'Declined' }
+export type Order = (typeof ORDERS)[number] & { jobNumber?: string; study?: string; addOns?: string[]; expires?: string; windows?: { pickup: string; delivery: string }; packaging?: string; handling?: string; repeatOf?: string; quoteRef?: string; changes?: OrderChange[] }
 
 interface OrdersState {
   created: Order[]

@@ -40,6 +40,30 @@ export const INITIAL_NOTIFICATIONS = [
     action: "Upload the customs documents"
   },
   {
+    id: "n1e",
+    kind: "change",
+    tone: "warning",
+    title: "Approve dry ice top-up \u00b7 job 261425490CL",
+    message: "WC Singapore recommends +8 kg of dry ice before departure so the frozen IMP returns stay below \u221215 \u00b0C through the LHR connection and customs. $70 at your agreed rate.",
+    time: `Today ${minutesAgo(50)}`,
+    unread: true,
+    to: "/shipments?job=261425490CL&changes=1",
+    cta: "Review the change",
+    needsAction: true,
+    action: "Approve the dry ice replenishment ($70)"
+  },
+  {
+    id: "n1f",
+    kind: "change",
+    tone: "info",
+    title: "Order changed \u00b7 dry ice replenished on job 261405510CL",
+    message: "+12 kg dry ice added at Heathrow before departure to hold the frozen IMP lot through the GRU connection; a further +8 kg is planned on arrival. $95 and $70 at your agreed rate, no action needed.",
+    time: `Today ${minutesAgo(410)}`,
+    unread: true,
+    to: "/shipments?job=261405510CL&changes=1",
+    cta: "See the change on the order"
+  },
+  {
     id: "n2",
     kind: "excursion",
     tone: "danger",

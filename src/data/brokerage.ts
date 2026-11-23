@@ -135,7 +135,7 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   {
     job: '261405510CL', order: 'ORD-2026-005', direction: 'Export', serviceLine: 'Clinical Supply Logistics', tier: 'Critical',
     lane: 'GB → BR', origin: { place: 'Byfleet', country: 'United Kingdom', code: 'GB' }, destination: { place: 'São Paulo', country: 'Brazil', code: 'BR' },
-    goods: 'IMP lot 24M311 · 2–8 °C · 3 cartons', route: 'wc', broker: 'World Courier Customs · São Paulo', specialist: 'Rafael Souza',
+    goods: 'IMP lot 24M311 · frozen on dry ice · 3 cartons', route: 'wc', broker: 'World Courier Customs · São Paulo', specialist: 'Rafael Souza',
     status: 'review', deadline: { label: 'Review due before departure', at: atTime(0, 22, 0) }, requestedAt: t(0, '08:12'),
     docs: [
       { ...CI('Brazil', 'Receita Federal matches the description to the NCM/HS code; generic descriptions are routed to inspection.'), ...ok('Commercial_invoice_1198.pdf', 0, '08:02') },
@@ -245,7 +245,7 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   {
     job: '261425490CL', order: 'ORD-2026-014', direction: 'Import', serviceLine: 'Clinical Supply Logistics', tier: 'Optimised',
     lane: 'SG → GB', origin: { place: 'Singapore', country: 'Singapore', code: 'SG' }, destination: { place: 'Macclesfield', country: 'United Kingdom', code: 'GB' },
-    goods: 'IMP returns · AZD-9833 25 mg tablets · 2–8 °C · 3 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
+    goods: 'IMP returns · AZD-9833 25 mg tablets · frozen on dry ice · 3 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
     status: 'docs', deadline: { label: 'Documents due before pick-up', at: atTime(2, 9, 0) },
     docs: [
       { ...RETURNS_INVOICE, ...ok('Proforma_invoice_IMP_returns_0107.pdf', 0, '10:40') },

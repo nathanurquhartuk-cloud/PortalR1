@@ -34,7 +34,7 @@ const A = {
 }
 const at = (day: number, time: string, tz: string) => `${fmtMonDay(daysFrom(day))} ${time} ${tz}`
 type LegStatus = 'done' | 'current' | 'pending'
-const leg = (id: string, mode: 'truck' | 'plane' | 'broker', provider: string, eta: string, from: string, to: string, status: LegStatus, issue?: string) => ({ id, mode, provider, eta, from, to, status, ...(issue ? { issue } : {}) })
+const leg = (id: string, mode: 'truck' | 'plane' | 'broker', provider: string, eta: string, from: string, to: string, status: LegStatus, issue?: string, note?: string) => ({ id, mode, provider, eta, from, to, status, ...(issue ? { issue } : {}), ...(note ? { note } : {}) })
 
 // Lane for job 261408871CL once proactive shipment intelligence has re-routed it via Berlin (see lib/live.ts)
 export const REROUTED_261408871CL = {
@@ -43,7 +43,7 @@ export const REROUTED_261408871CL = {
   etaFull: `${fmtNumeric(daysFrom(1))} 10:10:00 CEST`,
   legs: [
     leg('218788001M', 'truck', 'WC LONDON', at(0, '02:40', 'GMT'), A.azMacc, A.wcLondon, 'done'),
-    leg('218788002M', 'truck', 'WC LONDON', at(0, '06:05', 'GMT'), A.wcLondon, A.lhr, 'done'),
+    leg('218788002M', 'truck', 'WC LONDON', at(0, '06:05', 'GMT'), A.wcLondon, A.lhr, 'done', undefined, 'Dry ice replenished +6 kg at Byfleet hub'),
     leg('218788011M', 'plane', 'BRITISH AIRWAYS · BA 992', at(0, '21:35', 'CEST'), A.lhr, A.ber, 'current', 'Re-routed via Berlin'),
     leg('218788014M', 'truck', 'WC BERLIN · DEDICATED VEHICLE', at(1, '10:10', 'CEST'), A.ber, A.charite, 'pending'),
   ],
@@ -159,9 +159,9 @@ export const JOBS = [
     deliveryStatus: "On Time",
     temp: "4\u00b0C",
     battery: "82%",
-    product: "IMP - LOT 24M311 - 2-8C",
+    product: "IMP - LOT 24M311 - FROZEN - DRY ICE",
     service: "Clinical Supply Logistics \u00b7 Critical tier",
-    tempRange: "2 C to 8 C Refrigerated",
+    tempRange: "-25 C to -15 C Frozen (dry ice)",
     sensorId: "30141733",
     origin: [-0.46, 51.33],
     via: [-46.47, -23.43],
@@ -183,9 +183,9 @@ export const JOBS = [
     ],
     legs: [
       leg('218783301M', 'truck', 'WC LONDON', at(-1, '13:20', 'GMT'), A.clinigenUk, A.wcLondon, 'done', 'Temperature excursion'),
-      leg('218783303M', 'truck', 'WC LONDON', at(0, '04:30', 'GMT'), A.wcLondon, A.lhr, 'done'),
+      leg('218783303M', 'truck', 'WC LONDON', at(0, '04:30', 'GMT'), A.wcLondon, A.lhr, 'done', undefined, 'Dry ice replenished +12 kg at Heathrow'),
       leg('218783305M', 'plane', 'LATAM AIRLINES GROUP · LA 8085', at(1, '05:40', 'BRT'), A.lhr, A.gru, 'current', 'Temperature excursion'),
-      leg('218783308M', 'broker', 'CUSTOMER APPOINTED BROKER · CUSTOMS', at(2, '12:00', 'BRT'), A.gru, A.gru, 'pending'),
+      leg('218783308M', 'broker', 'CUSTOMER APPOINTED BROKER · CUSTOMS', at(2, '12:00', 'BRT'), A.gru, A.gru, 'pending', undefined, 'Dry ice top-up +8 kg planned on arrival'),
       leg('218783311M', 'truck', 'CUSTOMER APPOINTED BROKER', at(3, '11:00', 'BRT'), A.gru, A.einstein, 'pending'),
     ]
   },
@@ -219,7 +219,7 @@ export const JOBS = [
     ],
     legs: [
       leg('218788001M', 'truck', 'WC LONDON', at(0, '02:40', 'GMT'), A.azMacc, A.wcLondon, 'done'),
-      leg('218788002M', 'truck', 'WC LONDON', at(0, '06:05', 'GMT'), A.wcLondon, A.lhr, 'done'),
+      leg('218788002M', 'truck', 'WC LONDON', at(0, '06:05', 'GMT'), A.wcLondon, A.lhr, 'done', undefined, 'Dry ice replenished +6 kg at Byfleet hub'),
       leg('218788004M', 'plane', 'LUFTHANSA CARGO · LH 8341', at(0, '21:40', 'CEST'), A.lhr, A.fra, 'current', 'Delay risk'),
       leg('218788007M', 'truck', 'WC FRANKFURT', at(1, '09:00', 'CEST'), A.fra, A.charite, 'pending'),
     ]
@@ -297,16 +297,16 @@ export const JOBS = [
     deliveryStatus: "Not departed",
     temp: "\u2014",
     battery: "100%",
-    product: "IMP RETURNS - AZD-9833 25 MG TABLETS - 2-8C",
+    product: "IMP RETURNS - AZD-9833 25 MG TABLETS - FROZEN - DRY ICE",
     service: "Clinical Supply Logistics \u00b7 Optimised tier",
-    tempRange: "2 C to 8 C Refrigerated",
+    tempRange: "-25 C to -15 C Frozen (dry ice)",
     sensorId: "30142057",
     origin: [103.84, 1.28],
     dest: [-2.13, 53.26],
     isOpenAlert: false,
     issues: [],
     legs: [
-      leg('218807001M', 'truck', 'WC SINGAPORE', at(2, '09:00', 'SGT'), A.nccs, A.wcSgDepot, 'pending'),
+      leg('218807001M', 'truck', 'WC SINGAPORE', at(2, '09:00', 'SGT'), A.nccs, A.wcSgDepot, 'pending', undefined, 'Dry ice replenishment +8 kg proposed before departure'),
       leg('218807003M', 'plane', 'SINGAPORE AIRLINES CARGO \u00b7 SQ 7392', at(3, '05:30', 'GMT'), A.wcSgDepot, A.lhr, 'pending'),
       leg('218807005M', 'broker', 'WC CUSTOMS HEATHROW \u00b7 IMPORT ENTRY', at(3, '07:30', 'GMT'), A.lhr, A.lhr, 'pending'),
       leg('218807007M', 'truck', 'WC LONDON', at(3, '11:00', 'GMT'), A.lhr, A.azMacc, 'pending'),

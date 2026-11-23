@@ -8,16 +8,18 @@ import { INVOICES } from '../data/invoices'
 import { JOBS } from '../data/jobs'
 import { SCHEDULES } from '../data/schedules'
 import { fmtDayMonthYear } from '../lib/dates'
-import { downloadCapaPdf, downloadInvoicePdf, downloadPodPdf, downloadRateCardPdf, downloadSchedulePdf, downloadTemperaturePdf } from '../lib/pdf'
+import { downloadCapaPdf, downloadInvoicePdf, downloadPodPdf, downloadRateCardPdf, downloadSchedulePdf, downloadTemperaturePdf, downloadTemplatePdf } from '../lib/pdf'
+import { TEMPLATES } from '../data/templates'
 
-type Kind = 'all' | 'capa' | 'commercial' | 'shipment'
+type Kind = 'all' | 'capa' | 'commercial' | 'template' | 'shipment'
 interface Doc { id: string; kind: Kind; title: string; meta: string; status?: string; date: string; onDownload: () => void; capa?: Capa; link?: string }
 
 export const capaTone = (s: Capa['status']) => (s === 'Closed' ? 'ok' : s === 'Effectiveness check' ? 'info' : s === 'Open' ? 'bad' : 'warn')
 
 export default function Documents() {
   const [params, setParams] = useSearchParams()
-  const [kind, setKind] = useState<Kind>((params.get('kind') as Kind) || 'all')
+  const kindParam = params.get('kind')
+  const [kind, setKind] = useState<Kind>(kindParam === 'customs' || kindParam === 'blanket' ? 'template' : (kindParam as Kind) || 'all')
   const [q, setQ] = useState('')
   const [capa, setCapa] = useState<Capa | null>(null)
 
@@ -25,6 +27,7 @@ export default function Documents() {
 
   const docs = useMemo<Doc[]>(() => [
     ...CAPAS.map((c) => ({ id: c.id, kind: 'capa' as Kind, title: `${c.id} · ${c.title}`, meta: `${c.type} · ${c.severity} · job ${c.jobNumber} · ${c.lane}`, status: c.status, date: c.updated, onDownload: () => downloadCapaPdf(c), capa: c })),
+    ...TEMPLATES.map((t) => ({ id: t.id, kind: 'template' as Kind, title: `${t.name} · template`, meta: `${t.destinations.join(', ')} · ${t.fields.length} fields · ${t.version}`, status: 'Current', date: t.updated, onDownload: () => downloadTemplatePdf(t) })),
     ...DOCUMENTS.map((d) => { const s = SCHEDULES.find((x) => x.id === (d as { agreementId?: string }).agreementId); return { id: d.id, kind: 'commercial' as Kind, title: d.title, meta: `${d.kind} · ${d.service} · ${d.version}`, status: d.status, date: d.effective, onDownload: () => (s ? downloadSchedulePdf(s) : downloadRateCardPdf()) } }),
     ...INVOICES.flatMap((i) => { const t = (i as { temperature?: { result: string; excursions: number } }).temperature; return t ? [{ id: `TOR-${i.jobNumber}`, kind: 'shipment' as Kind, title: `Temperature of record · job ${i.jobNumber}`, meta: `${i.serviceLine} · ${i.route} · ${t.result}`, status: t.excursions ? `${t.excursions} excursion` : 'Within specification', date: fmtDayMonthYear(i.issued), onDownload: () => downloadTemperaturePdf(i), link: `/shipments?ref=${i.orderRef}` }] : [] }),
     ...JOBS.filter((j) => j.deliveryStatus === 'Delivered').map((j) => ({ id: `POD-${j.number}`, kind: 'shipment' as Kind, title: `Proof of delivery · job ${j.number}`, meta: `${j.service} · ${j.destination}`, status: 'Signed', date: j.eta, onDownload: () => downloadPodPdf(j), link: `/shipments?job=${j.number}` })),
@@ -43,12 +46,13 @@ export default function Documents() {
         <Stat label="Audit readiness" value="100%" delta="Every record has an owner and a sign-off trail" tone="ok" />
       </div>
       <div className="row between wrap" style={{ gap: 12, marginBottom: 14 }}>
-        <Segmented value={kind} onChange={(k) => { setKind(k); setParams(k === 'all' ? {} : { kind: k }) }} options={[{ id: 'all', label: 'All', count: docs.length }, { id: 'capa', label: 'CAPA reports', count: CAPAS.length }, { id: 'commercial', label: 'Agreements', count: DOCUMENTS.length }, { id: 'shipment', label: 'Shipment documents', count: docs.length - CAPAS.length - DOCUMENTS.length }]} />
+        <Segmented value={kind} onChange={(k) => { setKind(k); setParams(k === 'all' ? {} : { kind: k }) }} options={[{ id: 'all', label: 'All', count: docs.length }, { id: 'capa', label: 'CAPA reports', count: CAPAS.length }, { id: 'commercial', label: 'Agreements', count: DOCUMENTS.length }, { id: 'template', label: 'Templates', count: TEMPLATES.length }, { id: 'shipment', label: 'Shipment documents', count: docs.length - CAPAS.length - DOCUMENTS.length }]} />
         <div style={{ position: 'relative', maxWidth: 280, flex: 1 }}>
           <Search size={15} style={{ position: 'absolute', left: 12, top: 12, color: 'var(--faint)' }} />
           <input className="input" style={{ paddingLeft: 34, height: 38 }} placeholder="Reference, job, lane or title" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Filter documents" />
         </div>
       </div>
+      {kind === 'template' && <div className="tip" style={{ marginBottom: 14, fontStyle: 'normal' }}><FileText size={16} />One template per customs document you can upload in Brokerage: the fields each destination checks, what to enter and the rules applied the moment you upload. Download, complete and upload against the shipment.</div>}
       {kind === 'capa' && <div className="tip" style={{ marginBottom: 14, fontStyle: 'normal' }}><ClipboardCheck size={16} />Corrective and preventive action reports follow the GDP deviation standard: problem, containment, root cause, corrective and preventive actions, effectiveness check and sign-off. Each is linked to the shipment it investigates.</div>}
       {rows.length === 0 ? <Empty title="No documents match" /> : (
         <div className="card" style={{ overflow: 'hidden' }}>

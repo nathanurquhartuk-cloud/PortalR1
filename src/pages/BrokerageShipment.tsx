@@ -5,6 +5,8 @@ import { Deadline, DirectionBadge, Lane } from '../components/BrokerageBits'
 import { Button, Drawer, Empty, Page, PageHead, Pill, cx } from '../components/ui'
 import { BrokerDoc, BrokerageShipment, OWNER_LABEL, ROUTE_LABEL, STATUS_LABEL, STATUS_TONE, docsOk, docsOutstanding, latestCommentary, lc, nextAction, readyToRequest, useBrokerage } from '../lib/brokerage'
 import { openCora } from '../lib/notifications'
+import { templateFor } from '../data/templates'
+import { downloadTemplatePdf } from '../lib/pdf'
 
 type Tab = 'documents' | 'activity'
 
@@ -226,7 +228,14 @@ function ReqsDrawer({ d, blanket, onClose, onUpload }: { d: BrokerDoc; blanket: 
       <p className="small muted" style={{ marginTop: 4 }}>{d.guidance}</p>
       <div className="strong small" style={{ marginTop: 14 }}>File types</div>
       <p className="small muted" style={{ marginTop: 4 }}>PDF, JPG or PNG, up to 10 MB. One document per file.</p>
-      <p className="small" style={{ marginTop: 14 }}><Link to={blanket ? '/documents?kind=blanket' : '/documents?kind=customs'} className="link">{blanket ? 'View the document on file in the Blanket ID Library' : 'Open the template in the Document Library'}</Link></p>
+      {(() => { const t = templateFor(blanket ? 'Blanket ID document set' : d.name); return (
+        <div className="card pad tint" style={{ marginTop: 16, padding: '12px 14px' }}>
+          <div className="row between wrap" style={{ gap: 8 }}>
+            <div><div className="strong small">{t ? `${t.name} · template ${t.version}` : 'Template'}</div><div className="tiny muted">{t ? `${t.fields.length} fields · ${t.destinations.join(', ')}` : 'Fillable form with the fields this destination checks'}</div></div>
+            <div className="row" style={{ gap: 6 }}>{t && <Button size="xs" variant="soft" onClick={() => downloadTemplatePdf(t)} icon={<Download size={13} />}>Download template</Button>}<Link to="/documents?kind=template" className="btn ghost xs">Library</Link></div>
+          </div>
+        </div>
+      ) })()}
     </Drawer>
   )
 }
@@ -270,7 +279,7 @@ function UploadDrawer({ b, docId, onClose, onUpload, onReqs, onNext }: { b: Brok
         <>
           {dropzone(d.status === 'amend' ? 'Upload a corrected file' : 'Drop your file here', 'Use a sample file')}
           {d.status === 'amend' && <ul className="issues" style={{ marginTop: 14 }}>{d.issues.map((i) => <li key={i.check}><b>{i.check}:</b> {i.fix}</li>)}</ul>}
-          <p className="small" style={{ marginTop: 14 }}><button className="link" onClick={onReqs}>View requirements</button></p>
+          <p className="small row" style={{ marginTop: 14, gap: 14 }}><button className="link" onClick={onReqs}>View requirements</button>{templateFor(d.name) && <button className="link" onClick={() => downloadTemplatePdf(templateFor(d.name)!)}><Download size={12} /> Download the template</button>}</p>
         </>
       )}
       {phase === 'checking' && (

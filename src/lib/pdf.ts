@@ -184,3 +184,20 @@ export async function downloadCapaPdf(c: import('../data/capas').Capa) {
   footer(doc, 'Corrective and preventive action report generated from the Customer Workspace future-state vision. Illustrative content.')
   doc.save(`${c.id}.pdf`)
 }
+
+// Fillable template for a customs document: fields, what to enter and the checks applied on upload
+export async function downloadTemplatePdf(t: import('../data/templates').DocTemplate) {
+  const { jsPDF, autoTable } = await pdfLibs()
+  const doc = new jsPDF()
+  header(doc, `Template | ${T(t.name)}`, `${t.id} ${t.version}`)
+  block(doc, 14, 38, 'Purpose', [T(t.purpose)])
+  block(doc, 14, 56, 'Used for', [t.destinations.join(' | '), `Updated ${t.updated} | Document Library`])
+  autoTable(doc, { startY: 72, head: [['Field', 'What to enter', 'Your entry']], body: t.fields.map((f) => [T(f.label), T(f.hint + (f.example ? ` (e.g. ${f.example})` : '')), '']), headStyles: { fillColor: PURPLE }, styles: { fontSize: 9, cellPadding: 3 }, columnStyles: { 0: { cellWidth: 52, fontStyle: 'bold' }, 1: { cellWidth: 72 }, 2: { cellWidth: 58, minCellHeight: 12 } } })
+  let y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10
+  if (y > 230) { doc.addPage(); y = 20 }
+  block(doc, 14, y, 'Checked on upload', t.rules.map((r) => `- ${T(r)}`))
+  y += 8 + t.rules.length * 5
+  if (t.tips.length) block(doc, 14, y, 'Tips from the destination office', t.tips.map((r) => `- ${T(r)}`))
+  footer(doc, 'Illustrative template from the Customer Workspace future-state vision. Destination rules are placeholders.')
+  doc.save(`${t.id}-${t.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.pdf`)
+}

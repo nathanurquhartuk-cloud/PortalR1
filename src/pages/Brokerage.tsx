@@ -98,7 +98,7 @@ export default function Brokerage() {
           </ol>
           <div className="row wrap" style={{ gap: 10, marginTop: 14 }}>
             <Button variant="soft" size="sm" onClick={() => openCora('Which shipments need customs documents?')} icon={<Info size={15} />}>Ask Cora what is outstanding</Button>
-            <Button variant="ghost" size="sm" to="/documents?kind=customs" icon={<FileCheck2 size={15} />}>Document templates</Button>
+            <Button variant="ghost" size="sm" to="/documents?kind=template" icon={<FileCheck2 size={15} />}>Document templates</Button>
             <Button variant="ghost" size="sm" to="/book" icon={<Stamp size={15} />}>Book a shipment with brokerage</Button>
           </div>
         </div>

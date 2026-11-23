@@ -2,6 +2,7 @@ import { ArrowRight, Boxes, FlaskConical, Package } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Drawer, Empty, Expand, KV, Page, PageHead, Pill, Progress, Section, Stat, statusTone, cx } from '../components/ui'
+import { FEATURES } from '../lib/release'
 import { STUDIES } from '../data/studies'
 import { openCora } from '../lib/notifications'
 
@@ -86,7 +87,7 @@ export default function Studies() {
                   <div className="meta ellipsis">{site.study} · {site.city}, {site.country} · {site.stockDays} days of stock · next resupply {site.nextResupply}</div>
                 </div>
                 <Pill tone={healthTone(site.health)} dot>{site.health}</Pill>
-                <Link to={`/inventory?site=${encodeURIComponent(site.id)}`} className="btn ghost sm hide-m">Storage</Link>
+                {FEATURES.storage && <Link to={`/inventory?site=${encodeURIComponent(site.id)}`} className="btn ghost sm hide-m">Storage</Link>}
               </div>
             ))}
           </div>
@@ -117,7 +118,7 @@ export default function Studies() {
                     <div className="tiny muted">{site.city}, {site.country} · {site.stockDays} days of stock · next resupply {site.nextResupply}</div>
                   </div>
                   <Pill tone={healthTone(site.health)} dot>{site.health}</Pill>
-                  <Link to={`/inventory?site=${encodeURIComponent(site.id)}`} className="btn ghost xs" onClick={close}>Storage</Link>
+                  {FEATURES.storage ? <Link to={`/inventory?site=${encodeURIComponent(site.id)}`} className="btn ghost xs" onClick={close}>Storage</Link> : <Link to={`/shipments?q=${encodeURIComponent(site.id)}`} className="btn ghost xs" onClick={close}>Shipments</Link>}
                 </div>
               ))}
             </div>

@@ -8,16 +8,18 @@ import { CAPAS, capaForJob } from '../data/capas'
 import { openCora } from '../lib/notifications'
 
 type ReportPage = 'overview' | 'kpis' | 'coldchain' | 'risk' | 'sustainability' | 'benchmark' | 'spend'
+import { FEATURES } from '../lib/release'
 const PAGES: { id: ReportPage; label: string }[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'kpis', label: 'Live KPIs' },
-  { id: 'coldchain', label: 'Cold chain' },
+  { id: 'coldchain', label: 'Temperature reports' },
   { id: 'risk', label: 'Risk' },
   { id: 'sustainability', label: 'Sustainability' },
   { id: 'benchmark', label: 'Benchmark' },
   { id: 'spend', label: 'Spend and value' },
 ]
 const isPage = (s: string | null): s is ReportPage => !!s && PAGES.some((p) => p.id === s)
+const R1_PAGES = PAGES.filter((p) => (FEATURES.insightsPages as readonly string[]).includes(p.id))
 
 type SetKey = keyof typeof KPI_SETS
 const SET_KEYS = Object.keys(KPI_SETS) as SetKey[]
@@ -154,7 +156,7 @@ export default function Insights() {
       />
 
       <div style={{ overflowX: 'auto', marginBottom: 20 }}>
-        <Segmented value={page} onChange={setPage} options={PAGES} />
+        <Segmented value={page} onChange={setPage} options={R1_PAGES} />
       </div>
 
       {page === 'overview' && (

@@ -1,4 +1,5 @@
-import { MessageSquare, Phone, PhoneCall } from 'lucide-react'
+import { LifeBuoy, MessageSquare, Phone, PhoneCall } from 'lucide-react'
+import { FEATURES } from '../lib/release'
 import { useState } from 'react'
 import { CONTROL_TOWER_BASE } from '../data/controlTower'
 import { SPECIALISTS_BASE, TeamId } from '../data/specialists'
@@ -21,6 +22,14 @@ export function SpecialistOptions({ team = CONTROL_TOWER, compact, onDone }: { t
         <div className="strong">Call back requested</div>
         <div className="muted small" style={{ marginTop: 4 }}>{team.callbackNote}. Reference CB-{new Date().getHours()}{new Date().getMinutes()}.</div>
         {onDone && <div style={{ marginTop: 10 }}><Button size="sm" variant="ghost" onClick={onDone}>Close</Button></div>}
+      </div>
+    )
+  }
+  if (!FEATURES.chatAndCall) {
+    return (
+      <div className={compact ? 'row wrap' : 'grid cols-2'} style={{ gap: 10 }}>
+        <Button variant="primary" size={compact ? 'sm' : undefined} onClick={() => { openCora(team.chatPrompt); onDone?.() }} icon={<MessageSquare size={16} />}>Ask Cora</Button>
+        <Button variant="secondary" size={compact ? 'sm' : undefined} to="/support?case=new" icon={<LifeBuoy size={16} />}>Raise a case</Button>
       </div>
     )
   }

@@ -14,6 +14,32 @@ export const INITIAL_NOTIFICATIONS = [
     cta: "See the intervention timeline"
   },
   {
+    id: "n1c",
+    kind: "customs",
+    tone: "danger",
+    title: "Customs query \u00b7 job 261402288CL",
+    message: "Receita Federal selected the Campinas consignment for document inspection. Rafael Souza (WC Customs S\u00e3o Paulo) needs the HS code confirmed and a revised commercial invoice before release today.",
+    time: `Today ${minutesAgo(130)}`,
+    unread: true,
+    to: "/brokerage/261402288CL",
+    cta: "Fix and reply in Brokerage",
+    needsAction: true,
+    action: "Answer the customs query"
+  },
+  {
+    id: "n1d",
+    kind: "customs",
+    tone: "warning",
+    title: "Import permit needed \u00b7 job 261410034CL",
+    message: "WC Customs Mumbai needs the CDSCO Test Licence (Form 11) before pick-up tomorrow 05:20 to pre-lodge the Bill of Entry.",
+    time: `Yesterday 16:30`,
+    unread: true,
+    to: "/brokerage/261410034CL",
+    cta: "Upload in Brokerage",
+    needsAction: true,
+    action: "Upload the import licence"
+  },
+  {
     id: "n2",
     kind: "excursion",
     tone: "danger",
@@ -32,7 +58,7 @@ export const INITIAL_NOTIFICATIONS = [
     message: "AZ-CORE-201 \u00b7 Singapore. 4 days of IMP lot 24M204 left; replenishment ORD-2026-011 is booked. Upgrade to Critical tier to land within 24 hours.",
     time: `Today ${minutesAgo(190)}`,
     unread: true,
-    to: "/inventory?site=Site%20102",
+    to: "/studies?site=Site%20102",
     cta: "Review replenishment",
     needsAction: true,
     action: "Approve or upgrade the replenishment"

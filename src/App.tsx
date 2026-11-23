@@ -8,6 +8,9 @@ import Documents from './pages/Documents'
 import Financials from './pages/Financials'
 import Insights from './pages/Insights'
 import Inventory from './pages/Inventory'
+import Brokerage from './pages/Brokerage'
+import BrokerageShipment from './pages/BrokerageShipment'
+import { FEATURES } from './lib/release'
 import Login from './pages/Login'
 import More from './pages/More'
 import NotFound from './pages/NotFound'
@@ -31,8 +34,11 @@ export default function App() {
             <Route path="/orders" element={<Shipments />} />
             <Route path="/tracking" element={<Shipments live />} />
             <Route path="/studies" element={<Studies />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/storage" element={<Inventory />} />
+            <Route path="/inventory" element={FEATURES.storage ? <Inventory /> : <Navigate to="/studies" replace />} />
+            <Route path="/storage" element={FEATURES.storage ? <Inventory /> : <Navigate to="/studies" replace />} />
+            <Route path="/brokerage" element={<Brokerage />} />
+            <Route path="/brokerage/:job" element={<BrokerageShipment />} />
+            <Route path="/customs" element={<Navigate to="/brokerage" replace />} />
             <Route path="/financials" element={<Financials />} />
             <Route path="/invoices" element={<Financials />} />
             <Route path="/insights" element={<Insights />} />

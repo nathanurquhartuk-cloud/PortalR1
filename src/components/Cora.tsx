@@ -11,6 +11,8 @@ import { LOCALE_ACK, useSettings } from '../lib/settings'
 import { LOCALES, Locale, USER } from '../lib/user'
 import { Listener, canListen, canSpeak, listen, speak, stopSpeaking } from '../lib/voice'
 import { useLive } from '../lib/live'
+import { FEATURES } from '../lib/release'
+import { useBrokerage, needsYou, STATUS_LABEL, nextAction } from '../lib/brokerage'
 import { OFFICE_HOURS, Order, addHours, allOrders, fmtTime, fmtWhen, inOfficeHours, nextOfficeSlot, nextOrderRef, parseWhen, useOrders, weekLater } from '../lib/orders'
 import CoraMark from './CoraMark'
 import { ACCOUNT_TEAM, BILLING_TEAM, CONTROL_TOWER, SpecialistOptions, SpecialistTeam } from './SpecialistContact'
@@ -23,7 +25,7 @@ const opening = (fired: boolean) => fired
   : `${greeting()}, I'm Cora, your digital concierge.\n\nOpen today: a temperature excursion on job 261396071CL and two high-risk departures on Thursday. Proactive shipment intelligence is watching all 847 active shipments. How can I help today?`
 const LIVE_TEXT = 'Live update: proactive shipment intelligence has just re-routed job 261408871CL via Berlin ahead of a storm cell over Frankfurt. The delivery window and a 5 h 50 m decay margin are protected and Charité has been informed; no action is needed from you.'
 
-const SUGGESTIONS = ['Repeat shipment for Radiopharma from London to Porto Alegre', 'Explain the re-route', 'What needs my attention?', 'Track shipment 261396071CL', 'Which invoices are due?', 'Switch to German', 'Speak with a specialist']
+const SUGGESTIONS = ['Repeat shipment for Radiopharma from London to Porto Alegre', 'Which shipments need customs documents?', 'Explain the re-route', 'What needs my attention?', 'Track shipment 261396071CL', 'Which invoices are due?', 'Switch to German', 'Speak with a specialist']
 
 type Flow = { base: Order; step: 'pickup' | 'delivery' | 'confirmDelivery' | 'packaging' | 'handling'; pickup?: Date; delivery?: Date; proposed?: Date; alternative?: Date; packaging?: string; handling?: string }
 const HANDLING: Record<string, string> = { 'white i': 'White I', 'white 1': 'White I', 'white one': 'White I', 'white': 'White I', 'yellow ii': 'Yellow II', 'yellow 2': 'Yellow II', 'yellow two': 'Yellow II', 'yellow iii': 'Yellow III', 'yellow 3': 'Yellow III', 'yellow three': 'Yellow III', 'yellow': 'Yellow II' }
@@ -58,7 +60,7 @@ export default function Cora() {
   const stopSpeakRef = useRef<() => void>(() => {})
   const voiceRef = useRef(false)
   const lastSpoken = useRef(0)
-  const micOk = canListen(), ttsOk = canSpeak()
+  const micOk = FEATURES.voice && canListen(), ttsOk = FEATURES.voice && canSpeak()
 
   const stopListening = () => { listenerRef.current?.stop(); listenerRef.current = null; setListening(false) }
   const startListening = () => {
@@ -201,9 +203,15 @@ export default function Cora() {
     if (study || /stud|site|protocol/.test(s)) {
       const st = study ? STUDIES.find((x) => x.id.toLowerCase() === study[0].toLowerCase()) : undefined
       if (st) return { text: `${st.id} (${st.title}): ${st.sites} sites in ${st.countries} countries, ${st.collections} collections and ${st.deliveries} deliveries, logistics adherence ${st.adherence}%. Status: ${st.status}.`, actions: [go('Open the study', `/studies?study=${st.id}`)] }
-      return { text: `You have ${STUDIES.length} active studies. Site 102 (AZ-CORE-201, Singapore) is below its stock threshold and needs a decision on the replenishment tier.`, actions: [go('Open Studies', '/studies'), go('Site 102 inventory', '/inventory?site=Site%20102')] }
+      return { text: `You have ${STUDIES.length} active studies. Site 102 (AZ-CORE-201, Singapore) is below its stock threshold and needs a decision on the replenishment tier.`, actions: [go('Open Studies', '/studies'), go('Site 102', '/studies?site=Site%20102')] }
     }
-    if (/inventor|storage|stock|depot|lot|expir/.test(s)) return { text: 'Site 102 in Singapore has 4 days of IMP lot 24M204 left. Replenishment ORD-2026-011 is booked on the Optimised tier and collects tomorrow; upgrading to Critical lands it within 24 hours.', actions: [go('Review the replenishment', '/inventory?site=Site%20102')] }
+    if (/customs|broker|ok to send|clearance|import (permit|licen)|export (declaration|licen)|hs code|duty|duties/.test(s)) {
+      const all = useBrokerage.getState().shipments
+      const mine = all.filter(needsYou)
+      const lines = mine.map((b) => `• Job ${b.job} (${b.direction.toLowerCase()}, ${b.lane}): ${nextAction(b).text}`).join('\n')
+      return { text: mine.length ? `${mine.length} brokerage shipment${mine.length > 1 ? 's need' : ' needs'} you before customs can proceed:\n${lines}\n\nEverything else is in review or already OK to Send.` : `Nothing is waiting on you. ${all.filter((b) => b.status === 'review' || b.status === 'broker').length} shipments are in review and ${all.filter((b) => ['ok', 'clearing'].includes(b.status)).length} are OK to Send.`, actions: [go('Open Brokerage', '/brokerage'), ...mine.slice(0, 2).map((b) => go(`Job ${b.job} · ${STATUS_LABEL[b.status]}`, `/brokerage/${b.job}`))] }
+    }
+    if (/inventor|storage|stock|depot|lot|expir/.test(s)) return { text: 'Site 102 in Singapore has 4 days of IMP lot 24M204 left. Replenishment ORD-2026-011 is booked on the Optimised tier and collects tomorrow; upgrading to Critical lands it within 24 hours.', actions: [go('Review the replenishment', '/studies?site=Site%20102')] }
     if (/kpi|otif|performance|insight|analytic|report|how am i/.test(s)) return { text: 'Your OTIF for September was 97.6%, up 0.2 pp and above your 96% agreement target. Temperature compliance is 99.2% and you rank in the top 12% of shippers on the Cencora network.', actions: [go('Open Insights', '/insights')] }
     if (/agreement|rate|solution|service line|bundle|add-?on/.test(s)) return { text: 'You have three active solutions: Radiopharma (Critical tier with Data Analytics), Central Lab Logistics (Optimised bundle, Critical available per shipment) and Clinical Supply Logistics (Critical and Optimised, selected per shipment). Rates, schedules and amendments are in Solutions.', actions: [go('Open Solutions', '/solutions'), go('Request a quote', '/book?mode=quote')] }
     if (/book|new shipment|quote|order/.test(s)) return { text: 'I can start a booking for you. Direct orders price from your rate card and confirm immediately; quotes are for new service lines, bundles or add-ons.', actions: [go('Book a shipment', '/book'), go('Request a quote', '/book?mode=quote')] }

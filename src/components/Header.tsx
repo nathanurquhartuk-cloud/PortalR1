@@ -6,6 +6,7 @@ import { openCora, routeAlias, useNotifications } from '../lib/notifications'
 import { USER } from '../lib/user'
 import { useLive } from '../lib/live'
 import { cx } from './ui'
+import { FEATURES } from '../lib/release'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -16,14 +17,16 @@ function routeFor(q: string): string | null {
   if (/^INV-|^CN-/i.test(s)) return `/financials?invoice=${s.toUpperCase()}`
   if (/^(ORD|QUO)-/i.test(s)) return `/shipments?ref=${s.toUpperCase()}`
   if (/^AZ-/i.test(s)) return `/studies?study=${s.toUpperCase()}`
-  if (/^site\s?\d+/i.test(s)) return `/inventory?site=${encodeURIComponent(s)}`
+  if (/^site\s?\d+/i.test(s)) return FEATURES.storage ? `/inventory?site=${encodeURIComponent(s)}` : `/studies?site=${encodeURIComponent(s)}`
+  if (/customs|broker|ok to send|clearance|import permit|licen[cs]e|hs code|declaration/i.test(s)) return '/brokerage'
   if (/^capa/i.test(s)) return `/documents?capa=${s.toUpperCase()}`
   if (/capa|investigation|deviation/i.test(s)) return '/documents?kind=capa'
   if (/document|library|proof of delivery|temperature of record/i.test(s)) return '/documents'
   if (/invoice|statement|financ/i.test(s)) return '/financials'
   if (/shipment|order|track|job|quote/i.test(s)) return '/shipments'
   if (/stud|site|protocol/i.test(s)) return '/studies'
-  if (/inventor|storage|stock|depot|lot/i.test(s)) return '/inventory'
+  if (FEATURES.storage && /inventor|storage|stock|depot|lot/i.test(s)) return '/inventory'
+  if (/stock|depot|lot|resupply/i.test(s)) return '/studies'
   if (/agreement|rate|solution|service/i.test(s)) return '/solutions'
   if (/kpi|insight|analytic|report/i.test(s)) return '/insights'
   if (/support|case|help|specialist/i.test(s)) return '/support'
@@ -71,7 +74,7 @@ export default function Header({ onPhone, embedded }: { onPhone: () => void; emb
       </div>
       <form className="search" onSubmit={submit} role="search">
         <Search size={17} />
-        <input ref={inputRef} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search shipments, studies, storage and more…" aria-label="Search" />
+        <input ref={inputRef} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search shipments, customs, studies, invoices…" aria-label="Search" />
         <kbd>/</kbd>
       </form>
       <div className="actions" ref={wrapRef}>
@@ -128,14 +131,14 @@ export default function Header({ onPhone, embedded }: { onPhone: () => void; emb
                   ['profile', 'My profile', Contact],
                   ['contacts', 'Contacts and address book', MapPin],
                   ['team', 'Team members and roles', Users],
-                  ['security', 'Security and sessions', Shield],
+                  ...(FEATURES.security ? [['security', 'Security and sessions', Shield]] : []),
                   ['settings', 'Settings and language', Settings],
                 ].map(([id, label, Icon]) => {
                   const I = Icon as typeof Contact
                   return (<button key={id as string} className="menu-item" onClick={() => { setMenu(false); nav(`/account?tab=${id}`) }}><I size={17} />{label as string}</button>)
                 })}
                 <button className="menu-item" onClick={() => { setMenu(false); nav('/support') }}><HelpCircle size={17} />Help and support</button>
-                <button className="menu-item" onClick={() => { setMenu(false); openCora('Show me around the workspace') }}><BookOpen size={17} />Take the tour with Cora</button>
+                {FEATURES.tour && <button className="menu-item" onClick={() => { setMenu(false); openCora('Show me around the workspace') }}><BookOpen size={17} />Take the tour with Cora</button>}
                 <div style={{ borderTop: '1px solid var(--line)', margin: '6px 0' }} />
                 <button className="menu-item" onClick={() => { setMenu(false); logout(); nav('/login') }}><LogOut size={17} />Sign out</button>
               </div>

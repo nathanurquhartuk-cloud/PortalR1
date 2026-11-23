@@ -22,12 +22,12 @@ export const KPI_SETS = {
       {
         label: "Depot order-to-dispatch and pick accuracy",
         sub: "Frankfurt, Singapore, Boston, London",
-        to: "/inventory"
+        to: "/studies"
       },
       {
         label: "Expiry and returns control by lot",
         sub: "Audit-ready destruction certificates",
-        to: "/inventory?tab=expiry"
+        to: "/studies"
       },
       {
         label: "First-patient-in and rescue lead time",

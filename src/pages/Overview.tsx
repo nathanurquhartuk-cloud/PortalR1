@@ -1,14 +1,15 @@
-import { ArrowRight, FlaskConical, MapPin, Package, Receipt, Wallet } from 'lucide-react'
+import { ArrowRight, FileText, MapPin, Package, Receipt, Wallet } from 'lucide-react'
+import { FEATURES } from '../lib/release'
+import { BrokerageStrip } from '../components/BrokerageStrip'
 import { useSearchParams } from 'react-router-dom'
 import LaneReroute from '../components/LaneReroute'
 import CoraMark from '../components/CoraMark'
-import { Button, Page, QuickAction, Section } from '../components/ui'
+import { Button, Page, Pill, QuickAction, Section } from '../components/ui'
 import { SCHEDULES } from '../data/schedules'
 import { fmtLong, greeting, today } from '../lib/dates'
 import { openActions, useNotifications } from '../lib/notifications'
 import { USER } from '../lib/user'
 import { useLive } from '../lib/live'
-import { Pill } from '../components/ui'
 
 const BASE = import.meta.env.BASE_URL
 export const RECOMMENDED: { id: string; title: string; text: string; img: string }[] = [
@@ -49,7 +50,7 @@ export default function Overview() {
         <div className="grid cols-4">
           <QuickAction icon={<Package size={28} strokeWidth={1.6} />} label="Book shipment" to="/book" />
           <QuickAction icon={<MapPin size={28} strokeWidth={1.6} />} label="Track shipment" to="/shipments/live" />
-          <QuickAction icon={<FlaskConical size={28} strokeWidth={1.6} />} label="My studies" to="/studies" />
+          <QuickAction icon={<FileText size={28} strokeWidth={1.6} />} label="Request a quote" to="/book?mode=quote" />
           <QuickAction icon={<Wallet size={28} strokeWidth={1.6} />} label="My financials" to="/financials" />
         </div>
       </Section>
@@ -76,7 +77,13 @@ export default function Overview() {
         </div>
       </Section>
 
-      <Section title="Recommended for your programme" action={<a href="#/add-service">View all services <ArrowRight size={14} style={{ verticalAlign: -2 }} /></a>}>
+      {FEATURES.brokerage && (
+        <Section title="Brokerage" action={<a href="#/brokerage">All brokerage shipments <ArrowRight size={14} style={{ verticalAlign: -2 }} /></a>}>
+          <BrokerageStrip />
+        </Section>
+      )}
+
+      {FEATURES.recommended && <Section title="Recommended for your programme" action={<a href="#/add-service">View all services <ArrowRight size={14} style={{ verticalAlign: -2 }} /></a>}>
         <div className="grid cols-3">
           {RECOMMENDED.map((r) => (
             <div key={r.id} className="card photo-card">
@@ -89,7 +96,7 @@ export default function Overview() {
             </div>
           ))}
         </div>
-      </Section>
+      </Section>}
     </Page>
   )
 }

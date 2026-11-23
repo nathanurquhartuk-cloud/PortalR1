@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { INITIAL_NOTIFICATIONS } from '../data/notifications'
 
-export type NotifKind = 'reroute' | 'excursion' | 'stock' | 'invoice' | 'quote' | 'agreement' | 'report' | 'case' | 'delivery' | 'security' | 'risk'
+export type NotifKind = 'reroute' | 'excursion' | 'stock' | 'invoice' | 'quote' | 'agreement' | 'report' | 'case' | 'delivery' | 'security' | 'risk' | 'customs'
 export type Tone = 'success' | 'danger' | 'warning' | 'info'
 export interface Notification {
   id: string

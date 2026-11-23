@@ -1,4 +1,6 @@
-import { BarChart3, BatteryFull, Boxes, FlaskConical, FolderOpen, Home, LayoutGrid, LifeBuoy, MoreHorizontal, Receipt, Signal, Truck, Wifi } from 'lucide-react'
+import { BarChart3, BatteryFull, Boxes, FlaskConical, FolderOpen, Home, LayoutGrid, LifeBuoy, MoreHorizontal, Receipt, Signal, Stamp, Truck, Wifi } from 'lucide-react'
+import { FEATURES, RELEASE } from '../lib/release'
+import { useBrokerage, needsYou } from '../lib/brokerage'
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { isEmbedded } from '../lib/auth'
@@ -13,19 +15,22 @@ import { ActionsPanel } from './ActionsPanel'
 export const NAV = [
   { to: '/', label: 'Overview', icon: Home, end: true },
   { to: '/shipments', label: 'Shipments', icon: Truck },
+  ...(FEATURES.brokerage ? [{ to: '/brokerage', label: 'Brokerage', icon: Stamp }] : []),
   { to: '/studies', label: 'Studies', icon: FlaskConical },
-  { to: '/inventory', label: 'Storage', icon: Boxes },
+  ...(FEATURES.storage ? [{ to: '/inventory', label: 'Storage', icon: Boxes }] : []),
   { to: '/financials', label: 'Financials', icon: Receipt },
   { to: '/insights', label: 'Insights', icon: BarChart3 },
   { to: '/solutions', label: 'Solutions', icon: LayoutGrid },
   { to: '/documents', label: 'Documents', icon: FolderOpen },
 ]
+const TABS = NAV.filter((n) => ['/', '/shipments', '/brokerage', '/studies'].includes(n.to)).slice(0, 4)
 
 export default function Layout() {
   const [phone, setPhone] = useState(false)
   const [actions, setActions] = useState(false)
   const loc = useLocation()
   const open = useNotifications((s) => s.items.filter((n) => n.needsAction).length)
+  const brokerageOpen = useBrokerage((s) => s.shipments.filter(needsYou).length)
   const embedded = isEmbedded()
   const fire = useLive((s) => s.fire)
   const firedAt = useLive((s) => s.firedAt)
@@ -55,6 +60,7 @@ export default function Layout() {
             <n.icon size={19} strokeWidth={1.9} />
             <span>{n.label}</span>
             {n.to === '/' && open > 0 && <span className="badge">{open}</span>}
+            {n.to === '/brokerage' && brokerageOpen > 0 && <span className="badge">{brokerageOpen}</span>}
           </NavLink>
         ))}
         <div className="spacer" />
@@ -62,13 +68,13 @@ export default function Layout() {
           <LifeBuoy size={19} strokeWidth={1.9} />
           <span>Support</span>
         </NavLink>
-        <div className="foot">Cencora World Courier<br />Customer Workspace · future-state vision</div>
+        <div className="foot">Cencora World Courier<br />Customer Workspace · {RELEASE.name}<br /><span className="tiny">{RELEASE.label}</span></div>
       </aside>
       <main className="main">
         <Outlet />
       </main>
       <nav className="tabbar" aria-label="Mobile navigation">
-        {[NAV[0], NAV[1], NAV[2], NAV[4]].map((n) => (
+        {TABS.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => (isActive ? 'active' : '')}>
             <n.icon size={20} strokeWidth={1.9} /><span>{n.label}</span>
           </NavLink>

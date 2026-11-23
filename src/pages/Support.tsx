@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CONTROL_TOWER, SPECIALISTS, SpecialistOptions } from '../components/SpecialistContact'
 import { Button, Card, Page, PageHead, Pill, Section, statusTone } from '../components/ui'
+import { FEATURES } from '../lib/release'
 import { CASES } from '../data/cases'
 import { openCora, routeAlias } from '../lib/notifications'
 
@@ -15,7 +16,7 @@ export default function Support() {
 
   return (
     <Page>
-      <PageHead title="Support" sub="Specialist support when you need it, with chat, call or call back." />
+      <PageHead title="Support" sub={FEATURES.chatAndCall ? 'Specialist support when you need it, with chat, call or call back.' : 'Raise and track cases with the teams who run your programme, with Cora on hand for anything quick.'} />
 
       <div className="grid cols-3">
         <Card onClick={() => openCora('I need help')}>

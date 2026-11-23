@@ -21,7 +21,7 @@ export const CASES = [
     opened: "Yesterday",
     updated: "Today 08:15",
     status: "In progress",
-    to: "/inventory"
+    to: "/studies"
   },
   {
     id: "SUP-2026-043",

@@ -1,15 +1,16 @@
-import { BarChart3, Boxes, ChevronRight, FolderOpen, LayoutGrid, LifeBuoy, LogOut, UserCircle } from 'lucide-react'
+import { BarChart3, Stamp, Receipt, ChevronRight, FolderOpen, LayoutGrid, LifeBuoy, LogOut, UserCircle } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Page, PageHead } from '../components/ui'
 import { useAuth } from '../lib/auth'
 
 const ITEMS = [
-  { to: '/inventory', label: 'Storage', detail: 'Stock by site, lot and expiry', icon: Boxes },
+  { to: '/brokerage', label: 'Brokerage', detail: 'Customs documents, OK to Send and clearance', icon: Stamp },
+  { to: '/financials', label: 'Financials', detail: 'Invoices, credit notes and statements', icon: Receipt },
   { to: '/insights', label: 'Insights', detail: 'KPIs, risk and benchmarking', icon: BarChart3 },
   { to: '/solutions', label: 'Solutions', detail: 'Your agreements, rates and more services', icon: LayoutGrid },
   { to: '/documents', label: 'Documents', detail: 'CAPA reports, agreements, records and invoices', icon: FolderOpen },
   { to: '/support', label: 'Support', detail: 'Cases and specialist contact', icon: LifeBuoy },
-  { to: '/account', label: 'Account', detail: 'Profile, team, security and settings', icon: UserCircle },
+  { to: '/account', label: 'Account', detail: 'Profile, address book, team roles and settings', icon: UserCircle },
 ]
 
 export default function More() {

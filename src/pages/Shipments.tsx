@@ -7,6 +7,7 @@ import { CLUSTERS, Cluster, WorldMap } from '../components/WorldMap'
 import { INVOICES } from '../data/invoices'
 import { JOBS, REROUTED_261408871CL } from '../data/jobs'
 import { useLive } from '../lib/live'
+import { STATUS_LABEL, STATUS_TONE, docsOk, needsYou, nextAction, useBrokerage } from '../lib/brokerage'
 import { capaForJob } from '../data/capas'
 import { Order as StoreOrder, allOrders, useOrders } from '../lib/orders'
 import { fmtDayMonthYear } from '../lib/dates'
@@ -143,6 +144,7 @@ export default function Shipments({ live = false }: { live?: boolean }) {
 
 function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => void }) {
   const firedAt = useLive((s) => s.firedAt)
+  const brk = useBrokerage((s) => s.shipments.find((x) => x.job === o.jobNumber))
   const j0 = jobFor(o) as Job | undefined
   const j = j0 && j0.number === '261408871CL' && firedAt ? ({ ...j0, ...REROUTED_261408871CL } as Job) : j0
   const inv = invoiceFor(o)
@@ -168,6 +170,13 @@ function ShipmentDrawer({ order: o, onClose }: { order: Order; onClose: () => vo
         <KV rows={[['Reference', o.id], ['Type', `${o.kind} order${o.repeatOf ? ` · repeat of ${o.repeatOf}` : ''}`], ['Service', `${o.serviceLine} · ${o.tier} tier`], ['Add-ons', o.addOns?.length ? o.addOns.join(', ') : 'None'], ...(o.study ? [['Study', o.study] as [string, string]] : []), ['Route', o.route], ...(o.windows ? [['Pick-up window', o.windows.pickup] as [string, string], ['Delivery window', o.windows.delivery] as [string, string]] : []), ...(o.packaging ? [['Packaging', o.packaging] as [string, string]] : []), ...(o.handling ? [['Handling', `${o.handling} (radioactive category)`] as [string, string]] : []), ['Value', o.value]]} />
       </Expand>
 
+      {brk && (
+        <Expand title="Brokerage" open={needsYou(brk)} right={<Pill tone={STATUS_TONE[brk.status]} dot>{STATUS_LABEL[brk.status]}</Pill>}>
+          <div className="small" style={{ marginBottom: 8 }}>{brk.direction} · {brk.lane} · {brk.broker}</div>
+          <div className="small muted">{nextAction(brk).text}. {docsOk(brk)} of {brk.docs.length} customs documents checked.</div>
+          <div style={{ marginTop: 10 }}><Button size="sm" variant={needsYou(brk) ? 'primary' : 'soft'} to={`/brokerage/${brk.job}`} icon={<ArrowRight size={15} />}>{nextAction(brk).cta || 'Open in Brokerage'}</Button></div>
+        </Expand>
+      )}
       {j && (
         <Expand title={`Tracking · leg ${j.leg} of ${j.legs.length}`} open={!delivered} right={<Pill tone={statusTone(j.deliveryStatus)}>{j.deliveryStatus}</Pill>}>
           <div className="muted small" style={{ marginBottom: 12 }}>ETA {j.eta} · {j.product}</div>

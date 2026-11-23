@@ -6,12 +6,13 @@ import { LOCALE_ACK, useSettings } from '../lib/settings'
 import { LOCALES, Locale, USER } from '../lib/user'
 
 type Tab = 'profile' | 'contacts' | 'team' | 'notifications' | 'security' | 'settings'
+import { FEATURES } from '../lib/release'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'profile', label: 'Profile' },
   { id: 'contacts', label: 'Contacts' },
   { id: 'team', label: 'Team' },
   { id: 'notifications', label: 'Notifications' },
-  { id: 'security', label: 'Security' },
+  ...(FEATURES.security ? [{ id: 'security' as Tab, label: 'Security' }] : []),
   { id: 'settings', label: 'Settings' },
 ]
 const toTab = (v: string | null): Tab => (v === 'addresses' ? 'contacts' : (TABS.some((t) => t.id === v) ? (v as Tab) : 'profile'))

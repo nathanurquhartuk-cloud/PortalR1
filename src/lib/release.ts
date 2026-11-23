@@ -9,7 +9,7 @@ export const isActiveLine = (name: string) => /radiopharma|clinical supply/i.tes
 export const FEATURES = {
   storage: false,          // Depot and inventory: out of scope for Release 1
   recommended: false,      // Service upsell catalogue on the Overview: later release
-  voice: false,            // Cora Basic: text only in Release 1
+  voice: true,             // Cora with speech recognition and spoken replies
   chatAndCall: false,      // Support chat and request a call: out of scope (cases and Cora remain)
   tour: false,             // Onboarding: out of scope
   security: false,         // Security and sessions settings: later release

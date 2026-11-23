@@ -1,5 +1,5 @@
 import { ArrowRight, ClipboardCheck, MapPin, Sparkles } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Card, Page, PageHead, Pill, Progress, Section, Segmented, Stat, cx } from '../components/ui'
 import { ANALYTICS_QUESTIONS } from '../data/analyticsQuestions'
@@ -199,8 +199,10 @@ export default function Insights() {
   const [params, setParams] = useSearchParams()
   const page: ReportPage = isPage(params.get('page')) ? (params.get('page') as ReportPage) : 'overview'
   const setPage = (p: ReportPage) => { const next = new URLSearchParams(params); next.set('page', p); setParams(next, { replace: true }) }
-  const [setKey, setSetKey] = useState<SetKey>(SET_KEYS[0])
+  const wanted = params.get('set')
+  const [setKey, setSetKey] = useState<SetKey>(wanted && (SET_KEYS as string[]).includes(wanted) ? (wanted as SetKey) : SET_KEYS[0])
   const set = useMemo(() => KPI_SETS[setKey], [setKey])
+  useEffect(() => { if (wanted && (SET_KEYS as string[]).includes(wanted)) setSetKey(wanted as SetKey) }, [wanted])
 
   return (
     <Page>

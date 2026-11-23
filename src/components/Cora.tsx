@@ -11,7 +11,9 @@ import { LOCALE_ACK, useSettings } from '../lib/settings'
 import { LOCALES, Locale, USER } from '../lib/user'
 import { Listener, canListen, canSpeak, listen, speak, stopSpeaking } from '../lib/voice'
 import { useLive } from '../lib/live'
-import { INCIDENTS, SLA } from '../data/incidents'
+import { INCIDENTS, INCIDENT_SLA, SLA } from '../data/incidents'
+import { CAPAS, capaForJob } from '../data/capas'
+import { KPI_SETS } from '../data/kpiSets'
 import { FEATURES } from '../lib/release'
 import { useBrokerage, needsYou, STATUS_LABEL, nextAction } from '../lib/brokerage'
 import { OFFICE_HOURS, Order, addHours, allOrders, fmtTime, fmtWhen, inOfficeHours, nextOfficeSlot, nextOrderRef, parseWhen, useOrders, weekLater } from '../lib/orders'
@@ -26,7 +28,7 @@ const opening = (fired: boolean) => fired
   : `${greeting()}, I'm Cora, your digital concierge.\n\nOpen today: a temperature excursion on job 261396071CL and two high-risk departures on Thursday. Proactive shipment intelligence is watching all 847 active shipments. How can I help today?`
 const LIVE_TEXT = 'Live update: proactive shipment intelligence has just re-routed job 261408871CL via Berlin ahead of a storm cell over Frankfurt. The delivery window and a 5 h 50 m decay margin are protected and Charité has been informed; no action is needed from you.'
 
-const SUGGESTIONS = ['Repeat shipment for Radiopharma from London to Porto Alegre', 'Which shipments need customs documents?', 'Explain the re-route', 'What needs my attention?', 'Track shipment 261396071CL', 'Which invoices are due?', 'Switch to German', 'Speak with a specialist']
+const SUGGESTIONS = ['How is Radiopharma tracking?', 'Any open CAPAs?', 'Repeat shipment for Radiopharma from London to Porto Alegre', 'Which shipments need customs documents?', 'Explain the re-route', 'What needs my attention?', 'Track shipment 261396071CL', 'Which invoices are due?', 'Switch to German', 'Speak with a specialist']
 
 type Flow = { base: Order; step: 'pickup' | 'delivery' | 'confirmDelivery' | 'packaging' | 'handling'; pickup?: Date; delivery?: Date; proposed?: Date; alternative?: Date; packaging?: string; handling?: string }
 const HANDLING: Record<string, string> = { 'white i': 'White I', 'white 1': 'White I', 'white one': 'White I', 'white': 'White I', 'yellow ii': 'Yellow II', 'yellow 2': 'Yellow II', 'yellow two': 'Yellow II', 'yellow iii': 'Yellow III', 'yellow 3': 'Yellow III', 'yellow three': 'Yellow III', 'yellow': 'Yellow II' }
@@ -179,7 +181,7 @@ export default function Cora() {
     if (/language|translate/.test(s)) return { text: 'I can switch the workspace language for you. Which would you like: English, French, German, Spanish, Portuguese, Italian or Chinese?', actions: LOCALES.map((l) => ({ label: l.native, run: () => reply(`Switch to ${l.label}`) })) }
     // shipment tracking
     const job = s.match(/\b(\d{8,9})(cl)?\b/)
-    if (job && /track|where|status|shipment|job|eta/.test(s)) {
+    if (job && /track|where|status|shipment|job|eta/.test(s) && !/capa|investigation|deviation/.test(s)) {
       const j = JOBS.find((x) => x.number.startsWith(job[1]))
       const o = ORDERS.find((x) => (x as { jobNumber?: string }).jobNumber?.startsWith(job[1]))
       if (j) return { text: `Job ${j.number} is ${j.deliveryStatus.toLowerCase()} on leg ${j.leg} of ${j.legs.length}, ETA ${j.eta}. Current temperature ${j.temp} (range ${j.tempRange}). ${j.issues.length ? `${j.issues.length} open issue${j.issues.length > 1 ? 's' : ''}: ${j.issues[0].title.toLowerCase()}.` : 'No open issues.'}`, actions: [go('Open the shipment', `/shipments?job=${j.number}`), go('Live map', '/shipments/live')] }
@@ -205,6 +207,39 @@ export default function Cora() {
       const st = study ? STUDIES.find((x) => x.id.toLowerCase() === study[0].toLowerCase()) : undefined
       if (st) return { text: `${st.id} (${st.title}): ${st.sites} sites in ${st.countries} countries, ${st.collections} collections and ${st.deliveries} deliveries, logistics adherence ${st.adherence}%. Status: ${st.status}.`, actions: [go('Open the study', `/studies?study=${st.id}`)] }
       return { text: `You have ${STUDIES.length} active studies. Site 102 (NVS-CORE-201, Singapore) is below its stock threshold and needs a decision on the replenishment tier.`, actions: [go('Open Studies', '/studies'), go('Site 102', '/studies?site=Site%20102')] }
+    }
+    // CAPAs: by id, by job, by type or service line, or the whole register
+    if (/capa|investigation|deviation|root cause|corrective action/.test(s)) {
+      const byId = q.match(/CAPA-\d{4}-\d{3}/i)
+      const byJob = q.match(/\b(\d{8,9}[A-Z]{0,2})\b/i)
+      const one = byId ? CAPAS.find((c) => c.id.toLowerCase() === byId[0].toLowerCase()) : byJob ? capaForJob(byJob[1].toUpperCase()) : undefined
+      if (one) {
+        const openActs = [...one.corrective, ...one.preventive].filter((a) => a.status !== 'Complete')
+        return { text: `${one.id} · ${one.title}\n${one.type} · ${one.severity} · ${one.status}\nJob ${one.jobNumber} · ${one.lane} · ${one.serviceLine}\nOwner ${one.owner} · opened ${one.opened} · target close ${one.targetClose}\n${openActs.length ? `${openActs.length} action${openActs.length > 1 ? 's' : ''} still open: ${openActs.map((a) => a.action).join('; ')}.` : 'All corrective actions are complete.'}`, actions: [go(`Open ${one.id}`, `/documents?capa=${one.id}`), go('Track the shipment', `/shipments?job=${one.jobNumber}`)] }
+      }
+      if (byId || byJob) return { text: `I cannot find a CAPA for ${byId ? byId[0].toUpperCase() : byJob![1].toUpperCase()}. ${CAPAS.length} investigations are in the library.`, actions: [go('CAPA register', '/documents?kind=capa')] }
+      let list = CAPAS
+      if (/radio/.test(s)) list = list.filter((c) => /radiopharma/i.test(c.serviceLine))
+      if (/clinical|imp\b|trial/.test(s)) list = list.filter((c) => /clinical/i.test(c.serviceLine))
+      if (/temperature|excursion/.test(s)) list = list.filter((c) => c.type === 'Temperature excursion')
+      if (/customs|document/.test(s)) list = list.filter((c) => c.type === 'Documentation' || /customs/i.test(c.title))
+      if (/fail|late|delay|deliver/.test(s)) list = list.filter((c) => c.type === 'Failed delivery' || c.type === 'Delayed delivery')
+      if (/open|active|outstanding/.test(s)) list = list.filter((c) => c.status !== 'Closed')
+      if (/closed|complete/.test(s)) list = list.filter((c) => c.status === 'Closed')
+      const open = list.filter((c) => c.status !== 'Closed')
+      if (!list.length) return { text: 'No CAPAs match that. The register holds ' + CAPAS.length + ' investigations across Radiopharma and Clinical Supply Logistics.', actions: [go('CAPA register', '/documents?kind=capa')] }
+      return { text: `${list.length} CAPA${list.length > 1 ? 's' : ''}${list.length !== CAPAS.length ? ' match' : ''}, ${open.length} open:\n${list.map((c) => `• ${c.id} · ${c.title} · ${c.severity} · ${c.status} · job ${c.jobNumber}`).join('\n')}`, actions: [...list.slice(0, 3).map((c) => go(c.id, `/documents?capa=${c.id}`)), go('CAPA register', '/documents?kind=capa')] }
+    }
+    // KPI tracking by service line, with the incident service levels
+    if (/kpi|track(ing)?\b|perform|how (are we|am i|is|are) .*(doing|tracking|performing)|scorecard|how we are/.test(s) && /radio|clinical|trial|service line|overall|we\b/.test(s) && !/shipment \d|job \d/.test(s)) {
+      const lines: ('Radiopharma' | 'Clinical Supply Logistics')[] = /radio/.test(s) && !/clinical|trial|both|overall/.test(s) ? ['Radiopharma'] : /clinical|trial/.test(s) && !/radio|both|overall/.test(s) ? ['Clinical Supply Logistics'] : ['Radiopharma', 'Clinical Supply Logistics']
+      const parts = lines.map((l) => {
+        const set = KPI_SETS[l], sla = INCIDENT_SLA[l]
+        const first = set.bars[0], last = set.bars[set.bars.length - 1]
+        const below = set.labels.map((lab, i) => [lab, set.vals[i]] as [string, number]).filter(([, v]) => v < 95)
+        return `${l}: ${set.metrics.map(([k, v]) => `${k} ${v}`).join(' · ')}. Headline trend ${first}% → ${last}% since April (${last >= first ? 'up' : 'down'} ${Math.abs(last - first)} points). Incidents notified within 15 min ${sla.notified15}% (median ${sla.medianNotify}), resolved within 2 h ${sla.resolved2h}% (median ${sla.medianResolve}).${below.length ? ` Below the 95% line: ${below.map(([lab, v]) => `${lab} ${v}%`).join(', ')}.` : ' Every tracked measure is at or above the 95% line.'}`
+      })
+      return { text: parts.join('\n\n'), actions: [...lines.map((l) => go(`${l} KPIs`, `/insights?page=kpis&set=${encodeURIComponent(l)}`)), go('Incident response', '/insights')] }
     }
     if (/customs|broker|ok to send|clearance|import (permit|licen)|export (declaration|licen)|hs code|duty|duties/.test(s)) {
       const all = useBrokerage.getState().shipments

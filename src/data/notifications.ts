@@ -30,14 +30,14 @@ export const INITIAL_NOTIFICATIONS = [
     id: "n1d",
     kind: "customs",
     tone: "warning",
-    title: "Import permit needed \u00b7 job 261410034CL",
-    message: "WC Customs Mumbai needs the CDSCO Test Licence (Form 11) before pick-up tomorrow 05:20 to pre-lodge the Bill of Entry.",
-    time: `Yesterday 16:30`,
+    title: "Customs documents needed \u00b7 job 261425490CL",
+    message: "IMP returns from Singapore: the packing list with reconciliation and the proof of original export are needed before pick-up so WC Customs Heathrow can pre-lodge the entry under returned goods relief.",
+    time: `Today ${minutesAgo(75)}`,
     unread: true,
-    to: "/brokerage/261410034CL",
+    to: "/brokerage/261425490CL",
     cta: "Upload in Brokerage",
     needsAction: true,
-    action: "Upload the import licence"
+    action: "Upload the customs documents"
   },
   {
     id: "n2",

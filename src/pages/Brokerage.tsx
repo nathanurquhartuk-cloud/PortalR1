@@ -7,8 +7,8 @@ import { BrokerageShipment, OkStatus, STATUS_LABEL, STATUS_TONE, hoursLeft, need
 import { openCora } from '../lib/notifications'
 
 type Dir = 'all' | 'Export' | 'Import'
-type View = 'open' | 'all' | 'cleared'
-const ORDER: OkStatus[] = ['action', 'docs', 'hold', 'broker', 'review', 'ok', 'clearing', 'cleared']
+type View = 'open' | 'all' | 'delivered'
+const ORDER: OkStatus[] = ['action', 'docs', 'hold', 'broker', 'review', 'ok']
 
 export default function Brokerage() {
   const nav = useNavigate()
@@ -20,7 +20,7 @@ export default function Brokerage() {
 
   const filtered = useMemo(() => shipments
     .filter((b) => dir === 'all' || b.direction === dir)
-    .filter((b) => (view === 'cleared' ? b.status === 'cleared' : view === 'open' ? b.status !== 'cleared' : true))
+    .filter((b) => (view === 'delivered' ? !!b.delivered : view === 'open' ? !b.delivered : true))
     .filter((b) => status === 'all' || b.status === status)
     .sort((a, b) => ORDER.indexOf(a.status) - ORDER.indexOf(b.status) || a.deadline.at.getTime() - b.deadline.at.getTime()), [shipments, dir, view, status])
   const mine = useMemo(() => shipments.filter((b) => (dir === 'all' || b.direction === dir) && needsYou(b)).sort((a, b) => a.deadline.at.getTime() - b.deadline.at.getTime()), [shipments, dir])
@@ -32,18 +32,17 @@ export default function Brokerage() {
       <PageHead
         eyebrow="Customs and OK to Send"
         title="Brokerage"
-        sub="Every shipment that crosses a border with the Customs brokerage add-on, in one place: upload the documents each destination needs, answer your broker's questions and watch clearance happen. Exports and imports alike."
+        sub="Where OK to Send stands for every shipment that crosses a border with the Customs brokerage add-on, exports and imports alike: the documents each destination needs, the review, and the commentary from World Courier Customer Service as it is written on the case."
         tools={<Segmented value={dir} onChange={(v) => setQ('dir', v)} options={[{ id: 'all', label: 'All' }, { id: 'Export', label: 'Exports' }, { id: 'Import', label: 'Imports' }]} />}
       />
 
-      <div className="grid cols-4 brk-stats" style={{ marginBottom: 8 }}>
-        <div className="click-stat" onClick={() => { setStatus('all'); setQ('view', 'open') }}><Stat label="Needs you" value={counts.needsYou} delta={counts.needsYou ? 'Documents or answers outstanding' : 'Nothing waiting on you'} tone={counts.needsYou ? 'warn' : 'ok'} /></div>
+      <div className="grid cols-3 brk-stats" style={{ marginBottom: 8 }}>
+        <div className="click-stat" onClick={() => { setStatus('all'); setQ('view', 'open') }}><Stat label="Needs you" value={counts.needsYou} delta={counts.needsYou ? 'Documents outstanding or to amend' : 'Nothing waiting on you'} tone={counts.needsYou ? 'warn' : 'ok'} /></div>
         <div className="click-stat" onClick={() => { setStatus('review'); setQ('view', 'open') }}><Stat label="In review" value={counts.inReview} delta="World Courier Customs or your broker" /></div>
-        <div className="click-stat" onClick={() => { setStatus('ok'); setQ('view', 'open') }}><Stat label="OK to Send" value={counts.okToSend} delta="Approved, clearing on arrival" tone="ok" /></div>
-        <div className="click-stat" onClick={() => { setStatus('all'); setQ('view', 'cleared') }}><Stat label="Cleared" value={counts.cleared} delta="Last 30 days" /></div>
+        <div className="click-stat" onClick={() => { setStatus('ok'); setQ('view', 'open') }}><Stat label="OK to Send" value={counts.okToSend} delta="Approved and under way" tone="ok" /></div>
       </div>
 
-      {mine.length > 0 && view !== 'cleared' && (
+      {mine.length > 0 && view !== 'delivered' && (
         <Section title="Needs your attention" action={<span className="small muted">Sorted by deadline</span>}>
           <div className="grid cols-2" style={{ gap: 14 }}>
             {mine.map((b) => {
@@ -71,14 +70,14 @@ export default function Brokerage() {
       )}
 
       <Section
-        title={view === 'cleared' ? 'Cleared shipments' : 'Brokerage shipments'}
+        title={view === 'delivered' ? 'Delivered shipments' : 'Brokerage shipments'}
         action={
           <div className="row" style={{ gap: 8 }}>
             <select className="select" style={{ width: 'auto', height: 34, fontSize: 13, padding: '0 10px' }} value={status} onChange={(e) => setStatus(e.target.value as OkStatus | 'all')} aria-label="Filter by status">
               <option value="all">All statuses</option>
-              {ORDER.filter((s) => (view === 'cleared' ? s === 'cleared' : s !== 'cleared')).map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
+              {ORDER.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
             </select>
-            <div className="seg sm"><button className={view === 'open' ? 'active' : ''} onClick={() => setQ('view', 'open')}>Open</button><button className={view === 'all' ? 'active' : ''} onClick={() => setQ('view', 'all')}>All</button><button className={view === 'cleared' ? 'active' : ''} onClick={() => setQ('view', 'cleared')}>Cleared</button></div>
+            <div className="seg sm"><button className={view === 'open' ? 'active' : ''} onClick={() => setQ('view', 'open')}>Open</button><button className={view === 'all' ? 'active' : ''} onClick={() => setQ('view', 'all')}>All</button><button className={view === 'delivered' ? 'active' : ''} onClick={() => setQ('view', 'delivered')}>Delivered</button></div>
           </div>
         }
       >
@@ -92,10 +91,10 @@ export default function Brokerage() {
       <Section title="How OK to Send works">
         <div className="card pad how">
           <ol className="how-steps">
-            <li><span className="n">1</span><div><div className="strong small">Upload the documents</div><div className="tiny muted">Each destination has its own list. We check every file as you upload it and say exactly what to change.</div></div></li>
-            <li><span className="n">2</span><div><div className="strong small">Request OK to Send</div><div className="tiny muted">World Courier Customs at the destination, or your appointed broker, reviews the set.</div></div></li>
-            <li><span className="n">3</span><div><div className="strong small">OK to Send</div><div className="tiny muted">Hand over in your pick-up window. Blanket ID lanes are approved in advance.</div></div></li>
-            <li><span className="n">4</span><div><div className="strong small">Clear customs</div><div className="tiny muted">Entries are pre-lodged where the regime allows; questions from the broker reach you here, not by email.</div></div></li>
+            <li><span className="n">1</span><div><div className="strong small">Documents</div><div className="tiny muted">Each destination has its own list. We check every file as you upload it and say exactly what to change.</div></div></li>
+            <li><span className="n">2</span><div><div className="strong small">Request OK to Send</div><div className="tiny muted">Submit the set. You can submit with documents outstanding; OK to Send waits until they meet requirements.</div></div></li>
+            <li><span className="n">3</span><div><div className="strong small">Review</div><div className="tiny muted">World Courier Customs at the destination, or your appointed broker, reviews. Their commentary from Salesforce shows on the shipment.</div></div></li>
+            <li><span className="n">4</span><div><div className="strong small">OK to Send</div><div className="tiny muted">Hand over in your pick-up window. Blanket ID lanes are approved in advance. You are notified here and on the bell.</div></div></li>
           </ol>
           <div className="row wrap" style={{ gap: 10, marginTop: 14 }}>
             <Button variant="soft" size="sm" onClick={() => openCora('Which shipments need customs documents?')} icon={<Info size={15} />}>Ask Cora what is outstanding</Button>

@@ -16,7 +16,7 @@ export function BrokerageStrip() {
         <div className="brk-kpi"><span className="icon-wrap warn"><Stamp size={18} /></span><div><div className="value">{c.needsYou}</div><div className="label">need you</div></div></div>
         <div className="brk-kpi"><div><div className="value">{c.inReview}</div><div className="label">in review</div></div></div>
         <div className="brk-kpi"><div><div className="value green">{c.okToSend}</div><div className="label">OK to Send</div></div></div>
-        <div className="brk-kpi hide-m"><div><div className="value">{c.cleared}</div><div className="label">cleared · 30 days</div></div></div>
+        <div className="brk-kpi hide-m"><div><div className="value">{c.delivered}</div><div className="label">delivered · 30 days</div></div></div>
       </div>
       {mine.map((b) => {
         const a = nextAction(b)

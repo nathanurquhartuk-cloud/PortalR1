@@ -18,13 +18,13 @@ export const INITIAL_NOTIFICATIONS = [
     kind: "customs",
     tone: "danger",
     title: "Customs query \u00b7 job 261402288CL",
-    message: "Receita Federal selected the Campinas consignment for document inspection. Rafael Souza (WC Customs S\u00e3o Paulo) needs the HS code confirmed and a revised commercial invoice before release today.",
+    message: "Receita Federal selected the Campinas consignment for document inspection. WC Customs S\u00e3o Paulo needs a revised commercial invoice with the HS code and full product description before the inspection window closes tomorrow morning.",
     time: `Today ${minutesAgo(130)}`,
     unread: true,
     to: "/brokerage/261402288CL",
-    cta: "Fix and reply in Brokerage",
+    cta: "Fix and re-upload in Brokerage",
     needsAction: true,
-    action: "Answer the customs query"
+    action: "Amend the commercial invoice"
   },
   {
     id: "n1d",

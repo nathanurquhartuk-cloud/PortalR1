@@ -3,9 +3,10 @@
 Release 1: thin slice, fully connected experience. Scope follows the Release 1 slide and is switched in `src/lib/release.ts`
 (Depot/Storage, voice, chat and call support, onboarding tour and the upsell catalogue are off; Brokerage (OK to Send) is on).
 
-Brokerage: `/brokerage` lists every cross-border shipment with the Customs brokerage add-on (exports and imports), `/brokerage/:job`
-is the self-service workspace per shipment: OK to Send tracker, destination document checklist with instant checks, messages with the
-broker, customs entry and activity. Data lives in `src/data/brokerage.ts`, state and scripted review in `src/lib/brokerage.ts`.
+Brokerage (MVP, visibility first): `/brokerage` lists every cross-border shipment with the Customs brokerage add-on (exports and imports)
+with who acts next and by when; `/brokerage/:job` shows the four OK to Send steps (Documents, Request OK to Send, Review, OK to Send),
+the destination document checklist with upload and instant checks, read-only commentary from the Salesforce case and the activity log.
+Data lives in `src/data/brokerage.ts`, state and the scripted review in `src/lib/brokerage.ts`.
 
 Future-state vision of the Cencora World Courier customer portal, rebuilt as a clean, uncluttered workspace.
 

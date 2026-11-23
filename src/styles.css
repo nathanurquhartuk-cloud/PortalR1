@@ -444,6 +444,7 @@ button.link:hover { text-decoration: underline; }
 .brk-cols { grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
 /* tracker */
 .tracker ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; position: relative; }
+.tracker.four ol { grid-template-columns: repeat(4, 1fr); }
 .tracker li { position: relative; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .tracker li::after { content: ''; position: absolute; left: 36px; right: 2px; top: 13px; height: 2px; background: var(--line); }
 .tracker li:last-child::after { display: none; }
@@ -465,6 +466,9 @@ button.link:hover { text-decoration: underline; }
 .note.info { background: var(--blue-soft); border-color: #C9DAF5; } .note.info .ic, .note.info strong { color: var(--blue); }
 .seg button.attn { position: relative; }
 .seg button.attn::after { content: ''; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 99px; background: var(--red); }
+/* commentary (read-only, from Salesforce) */
+.commentary .cm { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--bg); border-left: 3px solid var(--purple); }
+.commentary .cm + .cm { margin-top: 8px; }
 /* documents */
 .doc { margin-bottom: 12px; }
 .doc.amend { border-color: #F0B8B0; }
@@ -512,7 +516,7 @@ button.link:hover { text-decoration: underline; }
 ul.plain { list-style: none; margin: 0; padding: 0; }
 @media (max-width: 900px) {
   .brk-cols { grid-template-columns: 1fr; }
-  .tracker ol { grid-template-columns: 1fr; gap: 12px; }
+  .tracker ol, .tracker.four ol { grid-template-columns: 1fr; gap: 12px; }
   .tracker li { flex-direction: row; }
   .tracker li::after { display: none; }
   .how-steps { grid-template-columns: 1fr 1fr; }

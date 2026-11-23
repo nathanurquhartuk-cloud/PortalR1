@@ -26,7 +26,7 @@ export function Lane({ b, compact }: { b: BrokerageShipment; compact?: boolean }
 }
 
 export function Deadline({ b, short }: { b: BrokerageShipment; short?: boolean }) {
-  if (b.status === 'cleared') return <span className="small muted">Delivered {b.deadline.at.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+  if (b.delivered) return <span className="small muted">Delivered {b.deadline.at.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
   const h = hoursLeft(b)
   const tone = h <= 6 ? 'bad' : h <= 24 ? 'warn' : ''
   const txt = h < 0 ? 'overdue' : h < 1 ? 'under an hour' : h < 48 ? `${h} h` : `${Math.round(h / 24)} days`

@@ -14,6 +14,7 @@ import { useLive } from '../lib/live'
 import { INCIDENTS, INCIDENT_SLA, SLA } from '../data/incidents'
 import { CAPAS, capaForJob } from '../data/capas'
 import { KPI_SETS } from '../data/kpiSets'
+import { SUSTAINABILITY } from '../data/sustainability'
 import { FEATURES } from '../lib/release'
 import { useBrokerage, needsYou, STATUS_LABEL, nextAction } from '../lib/brokerage'
 import { OFFICE_HOURS, Order, addHours, allOrders, fmtTime, fmtWhen, inOfficeHours, nextOfficeSlot, nextOrderRef, parseWhen, useOrders, weekLater } from '../lib/orders'
@@ -207,6 +208,10 @@ export default function Cora() {
       const st = study ? STUDIES.find((x) => x.id.toLowerCase() === study[0].toLowerCase()) : undefined
       if (st) return { text: `${st.id} (${st.title}): ${st.sites} sites in ${st.countries} countries, ${st.collections} collections and ${st.deliveries} deliveries, logistics adherence ${st.adherence}%. Status: ${st.status}.`, actions: [go('Open the study', `/studies?study=${st.id}`)] }
       return { text: `You have ${STUDIES.length} active studies. Site 102 (NVS-CORE-201, Singapore) is below its stock threshold and needs a decision on the replenishment tier.`, actions: [go('Open Studies', '/studies'), go('Site 102', '/studies?site=Site%20102')] }
+    }
+    if (/sustainab|co2|co₂|carbon|emission|green|saf\b|reusable|scope 3/.test(s)) {
+      const todo = SUSTAINABILITY.practices.filter((p) => p.status !== 'Adopted')
+      return { text: `Scope 3 transport emissions are ${SUSTAINABILITY.headline[0].value} year to date, ${SUSTAINABILITY.headline[1].value} per shipment (down 9%), with ${SUSTAINABILITY.practices.filter((p) => p.status === 'Adopted').length} of 12 best practices adopted.\n\nStill to do:\n${todo.map((p) => `• ${p.name} · ${p.status} · ${p.impact}`).join('\n')}\n\nThe quickest win is scaling SAF credits to 25% on the LHR → GRU and LHR → BOM lanes; it needs no change to transit time.`, actions: [go('Sustainability dashboard', '/insights?page=sustainability'), go('Speak with the account team', '/support')] }
     }
     // CAPAs: by id, by job, by type or service line, or the whole register
     if (/capa|investigation|deviation|root cause|corrective action/.test(s)) {

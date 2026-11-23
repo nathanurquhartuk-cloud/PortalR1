@@ -15,5 +15,5 @@ export const FEATURES = {
   security: false,         // Security and sessions settings: later release
   packagingTracking: false,// Packaging asset tracking: out of scope
   brokerage: true,         // Brokerage (OK to Send): in scope
-  insightsPages: ['overview', 'kpis', 'coldchain', 'sustainability', 'spend'] as const, // Data: Live KPIs, Temperature reports, Sustainability, Spend and value
+  insightsPages: ['overview', 'kpis', 'sustainability', 'spend'] as const, // Data: Live KPIs, Sustainability, Spend and value
 }

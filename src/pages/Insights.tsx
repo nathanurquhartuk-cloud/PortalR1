@@ -1,9 +1,11 @@
-import { ArrowRight, ClipboardCheck, MapPin, Sparkles } from 'lucide-react'
+import { ArrowRight, ClipboardCheck, Sparkles } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Card, Page, PageHead, Pill, Progress, Section, Segmented, Stat, cx } from '../components/ui'
 import { ANALYTICS_QUESTIONS } from '../data/analyticsQuestions'
 import { KPI_SETS } from '../data/kpiSets'
+import { SUSTAINABILITY } from '../data/sustainability'
+import { exportCsv } from '../lib/pdf'
 import { INCIDENTS, INCIDENT_SLA, IncidentLine, SLA, fmtMins } from '../data/incidents'
 import { CAPAS, capaForJob } from '../data/capas'
 import { openCora } from '../lib/notifications'
@@ -208,8 +210,8 @@ export default function Insights() {
     <Page>
       <PageHead
         title="Insights"
-        sub="Live KPIs for Radiopharma and Clinical Supply Logistics: incident response against the 15 minute and 2 hour service levels, temperature, sustainability and spend."
-        tools={<><Button variant="secondary" to="/shipments/live" icon={<MapPin size={16} />}>Open live tracking</Button><Button onClick={() => openCora('How am I performing this month?')} icon={<Sparkles size={16} />}>Ask Cora</Button></>}
+        sub="Live KPIs for Radiopharma and Clinical Supply Logistics: incident response against the 15 minute and 2 hour service levels, sustainability best practice and spend."
+        tools={<><Button onClick={() => openCora('How am I performing this month?')} icon={<Sparkles size={16} />}>Ask Cora</Button></>}
       />
 
       <div style={{ overflowX: 'auto', marginBottom: 20 }}>
@@ -393,19 +395,86 @@ export default function Insights() {
 
       {page === 'sustainability' && (
         <>
+          <div className="row between wrap" style={{ marginBottom: 12, gap: 10 }}>
+            <div><div className="strong">Sustainability best practice</div><div className="small muted">{SUSTAINABILITY.period} · measured to the GLEC Framework / ISO 14083</div></div>
+            <Button variant="secondary" size="sm" onClick={() => exportCsv(SUSTAINABILITY.practices.map((p) => ({ practice: p.name, status: p.status, coverage: p.coverage, impact: p.impact })), 'sustainability-best-practice')} icon={<ArrowRight size={15} />}>Export practices</Button>
+          </div>
           <div className="grid cols-4">
-            <Stat label="Scope 3 CO₂e YTD" value="312 t" delta="−9% per shipment" tone="ok" />
-            <Stat label="Consolidated milk runs" value="18%" delta="Of EU road legs" tone="ok" />
-            <Stat label="Reusable shippers" value="62%" delta="Of consignments" tone="ok" />
-            <Stat label="Offset-ready reports" value="Monthly" delta="Audit-ready evidence" />
+            {SUSTAINABILITY.headline.map((h) => <Stat key={h.label} label={h.label} value={h.value} delta={h.delta} tone={h.tone} />)}
+          </div>
+          <div className="grid cols-2" style={{ marginTop: 16 }}>
+            <Card>
+              <div className="strong">CO₂e per shipment</div>
+              <div className="small muted" style={{ marginBottom: 10 }}>kg CO₂e · last 12 months · target 85 kg</div>
+              <Sparkline values={SUSTAINABILITY.perShipment} labels={SUSTAINABILITY.months} />
+              <div className="row wrap" style={{ gap: 14, marginTop: 12 }}>
+                {SUSTAINABILITY.byLine.map((l) => <div key={l.line} className="card pad tint" style={{ padding: '10px 12px', flex: 1, minWidth: 180 }}><div className="small strong">{l.line}</div><div className="row" style={{ gap: 8, alignItems: 'baseline' }}><span className="strong" style={{ fontSize: 20 }}>{l.perShipment} kg</span><span className="tiny green">{l.trend}% vs last year</span></div><div className="tiny muted" style={{ marginTop: 4 }}>{l.note}</div></div>)}
+              </div>
+            </Card>
+            <Card>
+              <div className="strong">Where the emissions are</div>
+              <div className="small muted" style={{ marginBottom: 12 }}>Share of Scope 3 transport CO₂e by mode</div>
+              <div className="stack" style={{ gap: 12 }}>
+                {SUSTAINABILITY.byMode.map((m) => (
+                  <div key={m.mode}>
+                    <div className="row between small" style={{ marginBottom: 4 }}><span className="strong">{m.mode}</span><span className="mono muted">{m.tonnes} t · {m.share}%</span></div>
+                    <Progress value={m.share} tone={m.share > 50 ? 'warn' : 'ok'} />
+                    <div className="tiny muted" style={{ marginTop: 3 }}>{m.note}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
           </div>
           <Card style={{ marginTop: 16 }}>
-            <div className="stack" style={{ gap: 10 }}>
-              <p>Emissions per shipment are down 9% year to date as EU road legs consolidate into milk runs.</p>
-              <p>Reusable shipper adoption rose to 62% of consignments, removing single-use packaging from most clinical supply lanes.</p>
-              <p>Monthly offset-ready reports are generated per service line and can be exported for your Scope 3 disclosures.</p>
+            <div className="row between wrap" style={{ gap: 10 }}><div><div className="strong">Best practice scorecard</div><div className="small muted">Twelve practices that move Scope 3 on specialty pharma lanes, and where your programme stands</div></div><div className="row" style={{ gap: 6 }}><Pill tone="ok" dot>{SUSTAINABILITY.practices.filter((p) => p.status === 'Adopted').length} adopted</Pill><Pill tone="info" dot>{SUSTAINABILITY.practices.filter((p) => p.status === 'In progress').length} in progress</Pill><Pill tone="warn" dot>{SUSTAINABILITY.practices.filter((p) => p.status === 'Recommended').length} recommended</Pill></div></div>
+            <div className="table-wrap" style={{ marginTop: 10 }}>
+              <table className="table">
+                <thead><tr><th>Practice</th><th>Status</th><th>Coverage</th><th>Impact</th></tr></thead>
+                <tbody>
+                  {SUSTAINABILITY.practices.map((p) => (
+                    <tr key={p.id}>
+                      <td><div className="strong">{p.name}</div><div className="tiny muted" style={{ maxWidth: 460 }}>{p.detail}</div></td>
+                      <td><Pill tone={p.status === 'Adopted' ? 'ok' : p.status === 'In progress' ? 'info' : 'warn'} dot={p.status !== 'Adopted'}>{p.status}</Pill></td>
+                      <td className="small">{p.coverage}</td>
+                      <td className="small strong">{p.impact}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </Card>
+          <div className="grid cols-2" style={{ marginTop: 16 }}>
+            <Card>
+              <div className="strong">Targets</div>
+              <div className="small muted" style={{ marginBottom: 12 }}>Agreed with your sustainability team · progress against each</div>
+              <div className="stack" style={{ gap: 12 }}>
+                {SUSTAINABILITY.targets.map((t) => {
+                  const pct = t.unit === 'kg' ? Math.round(((SUSTAINABILITY.perShipment[0] - t.now) / (SUSTAINABILITY.perShipment[0] - t.target)) * 100) : Math.round((t.now / t.target) * 100)
+                  return (
+                    <div key={t.label}>
+                      <div className="row between small" style={{ marginBottom: 4 }}><span className="muted">{t.label}</span><span className="strong mono">{t.now}{t.unit === '%' ? '%' : ` ${t.unit}`} → {t.target}{t.unit === '%' ? '%' : ` ${t.unit}`} by {t.by}</span></div>
+                      <Progress value={Math.min(100, pct)} tone={pct >= 75 ? 'ok' : undefined} />
+                    </div>
+                  )
+                })}
+              </div>
+            </Card>
+            <Card>
+              <div className="row" style={{ gap: 8 }}><span className="strong">Next best actions</span><Pill tone="brand">AI</Pill></div>
+              <div className="small muted" style={{ marginBottom: 12 }}>Ranked by tonnes avoided per unit of effort</div>
+              <div className="stack" style={{ gap: 10 }}>
+                {[
+                  ['Scale SAF credits to 25% on LHR → GRU and LHR → BOM', '−7 t / year · no change to transit time or lane'],
+                  ['Close the reusable shipper loop from Porto Alegre and Rio', '−6 t / year · pairs with the IMP returns already flowing'],
+                  ['Route IMP returns for destruction sea-air', '−4 t / year · returns have no clinical deadline'],
+                  ['Show CO₂e on every quote', 'Makes the lower-carbon option visible at booking'],
+                ].map(([t, d]) => (
+                  <div key={t} className="row" style={{ gap: 10, alignItems: 'flex-start' }}><span style={{ width: 8, height: 8, borderRadius: 99, background: GREEN, marginTop: 7, flex: 'none' }} /><div><div className="small strong">{t}</div><div className="tiny muted">{d}</div></div></div>
+                ))}
+              </div>
+              <div style={{ marginTop: 14 }}><Button size="sm" variant="soft" onClick={() => openCora('Which sustainability best practices are we missing?')} icon={<Sparkles size={15} />}>Ask Cora to plan these</Button></div>
+            </Card>
+          </div>
         </>
       )}
 

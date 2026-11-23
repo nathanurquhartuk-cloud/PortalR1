@@ -2,37 +2,32 @@
 
 export const KPI_SETS = {
   "Clinical Supply Logistics": {
-    sub: "Site resupply reliability, depot readiness, protocol-window delivery and returns control.",
+    sub: "Protocol-window delivery, customs readiness, temperature integrity and incident response for clinical trial material.",
     subscribed: true,
     metrics: [
       ["Site deliveries in window", "97%", "Within protocol delivery window", true],
-      ["Depot order-to-dispatch", "6.4 h", "Median \u00b7 Critical tier 2.1 h", true],
-      ["Stock-out events avoided", "9", "Proactive replenishment \u00b7 90 days", true],
-      ["Sites below threshold", "2", "Replenishment booked for both", false]
+      ["OK to Send first time", "94%", "Documents accepted without amendment", true],
+      ["Temperature integrity", "99.1%", "Shipments without an excursion", true],
+      ["Open incidents", "1", "Customs query \u00b7 Camberley import", false]
     ],
     bars: [88, 90, 93, 95, 96, 96, 97],
-    labels: ["Window adherence", "Depot readiness", "Temperature integrity", "Returns and destruction"],
-    vals: [97, 98, 99, 94],
+    labels: ["Window adherence", "OK to Send first time", "Temperature integrity", "Returns and destruction"],
+    vals: [97, 94, 99, 94],
     detail: [
       {
-        label: "Site resupply by study and depot",
+        label: "Site delivery adherence by study and site",
         sub: "Drill down by study, site or shipment",
         to: "/studies"
       },
       {
-        label: "Depot order-to-dispatch and pick accuracy",
-        sub: "Frankfurt, Singapore, Boston, London",
-        to: "/studies"
+        label: "OK to Send and customs clearance",
+        sub: "Documents, review time and amendments by lane",
+        to: "/brokerage"
       },
       {
-        label: "Expiry and returns control by lot",
-        sub: "Audit-ready destruction certificates",
-        to: "/studies"
-      },
-      {
-        label: "First-patient-in and rescue lead time",
-        sub: "Critical tier shipments \u00b7 90 days",
-        to: "/tracking"
+        label: "Investigations (CAPA)",
+        sub: "Temperature excursions and delivery failures with corrective actions",
+        to: "/documents?kind=capa"
       }
     ]
   },

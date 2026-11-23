@@ -18,8 +18,8 @@ export const ANALYTICS_QUESTIONS = [
     page: "sustainability"
   },
   {
-    q: "Where are my open excursions?",
-    page: "coldchain"
+    q: "Which sustainability best practices are we missing?",
+    page: "sustainability"
   },
   {
     q: "Show spend by service line this year",

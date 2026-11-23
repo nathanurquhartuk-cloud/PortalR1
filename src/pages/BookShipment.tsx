@@ -104,7 +104,7 @@ export default function BookShipment() {
           <div className="card pad">
             <div className="strong" style={{ marginBottom: 14 }}>Route and timing</div>
             <div className="grid cols-2">
-              <div className="field"><label>Collect from</label><input className="input" value={origin} onChange={(e) => setOrigin(e.target.value)} placeholder={isClinical ? 'WC Frankfurt depot' : 'Macclesfield'} required /></div>
+              <div className="field"><label>Collect from</label><input className="input" value={origin} onChange={(e) => setOrigin(e.target.value)} placeholder={isClinical ? 'WC Frankfurt depot' : 'Camberley'} required /></div>
               <div className="field"><label>Deliver to</label><input className="input" value={dest} onChange={(e) => setDest(e.target.value)} placeholder="Charité Berlin" required /></div>
               <div className="field"><label>Collection date</label><input className="input" value={date} onChange={(e) => setDate(e.target.value)} /></div>
               <div className="field"><label>Temperature range</label>

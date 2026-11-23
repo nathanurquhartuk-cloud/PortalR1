@@ -104,14 +104,14 @@ const RGR = doc('rgr', 'Proof of original export (returned goods relief)',
 const IOR = doc('ior', 'Importer of record details',
   'UK import: EORI number, VAT registration and the deferment or postponed VAT choice for the importer of record.',
   ['EORI number (GB)', 'VAT registration', 'Duty and VAT payment method', 'Authorised signatory'],
-  [], ['Importer_of_record_AZ_UK.pdf'])
+  [], ['Importer_of_record_Novartis_UK.pdf'])
 
 export const BROKERAGE_SEED: BrokerageShipment[] = [
   // ---------------- Exports ----------------
   {
     job: '261402288CL', order: 'ORD-2026-008', direction: 'Export', serviceLine: 'Clinical Supply Logistics', tier: 'Critical',
     lane: 'GB → BR', origin: { place: 'Byfleet', country: 'United Kingdom', code: 'GB' }, destination: { place: 'Campinas', country: 'Brazil', code: 'BR' },
-    goods: 'AZD-4573 50 mg vials · clinical trial material · 2–8 °C', route: 'wc', broker: 'World Courier Customs · São Paulo', specialist: 'Rafael Souza',
+    goods: 'JDQ-4573 50 mg vials · clinical trial material · 2–8 °C', route: 'wc', broker: 'World Courier Customs · São Paulo', specialist: 'Rafael Souza',
     status: 'action', deadline: { label: 'Inspection window closes', at: atTime(1, 10, 0) }, requestedAt: t(-2, '16:40'),
     docs: [
       { ...CI('Brazil', 'Receita Federal matches the description to the NCM/HS code; generic descriptions are routed to inspection.'), status: 'amend', attempts: 1, file: 'Commercial_invoice_1142.pdf', version: 1, uploadedAt: t(-3, '10:05'), issues: [{ check: 'Description of goods with HS code', fix: 'The description is generic ("pharmaceutical samples"). State the product, strength and pack size and add NCM/HS 3002.15.90, then upload the invoice again.' }], resolved: [], samples: ['Commercial_invoice_1142.pdf', 'Commercial_invoice_1142_v2.pdf'], forcePass: true },
@@ -120,7 +120,7 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
       { ...COA, ...ok('CoA_batch_24K118.pdf', -3, '10:09') },
     ],
     commentary: [
-      { id: 'c1', at: t(0, '07:55'), who: 'Rafael Souza · WC Customs São Paulo', doc: 'ci', text: 'Receita Federal selected the consignment for the yellow channel (document inspection) because the invoice describes the goods as "pharmaceutical samples". Please upload a revised commercial invoice stating "AZD-4573 50 mg vials, clinical trial material, 24 vials" with NCM/HS 3002.15.90. With that I expect release before the inspection window closes tomorrow morning.' },
+      { id: 'c1', at: t(0, '07:55'), who: 'Rafael Souza · WC Customs São Paulo', doc: 'ci', text: 'Receita Federal selected the consignment for the yellow channel (document inspection) because the invoice describes the goods as "pharmaceutical samples". Please upload a revised commercial invoice stating "JDQ-4573 50 mg vials, clinical trial material, 24 vials" with NCM/HS 3002.15.90. With that I expect release before the inspection window closes tomorrow morning.' },
       { id: 'c2', at: t(-1, '09:20'), who: 'Rafael Souza · WC Customs São Paulo', text: 'OK to Send given. Import declaration (DI) registered on arrival at GRU.' },
       { id: 'c3', at: t(-2, '16:40'), who: 'World Courier Customer Service · Salesforce', text: 'Request OK to Send received with 4 documents checked. Passed to WC Customs São Paulo for review.' },
     ],
@@ -179,12 +179,12 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   },
   {
     job: '261408871CL', order: 'ORD-2026-007', direction: 'Export', serviceLine: 'Radiopharma', tier: 'Critical',
-    lane: 'GB → DE', origin: { place: 'Macclesfield', country: 'United Kingdom', code: 'GB' }, destination: { place: 'Berlin', country: 'Germany', code: 'DE' },
+    lane: 'GB → DE', origin: { place: 'Camberley', country: 'United Kingdom', code: 'GB' }, destination: { place: 'Berlin', country: 'Germany', code: 'DE' },
     goods: 'Radiopharmaceutical · Class 7 UN2915 · 1 package', route: 'blanket', broker: 'World Courier Customs · Frankfurt', specialist: 'Jonas Weber', blanketId: 'BID-2026-DE-0147',
     status: 'ok', deadline: { label: 'Delivery window', at: atTime(1, 8, 0) }, requestedAt: t(0, '03:05'), okAt: t(0, '03:06'),
     docs: [
-      { ...doc('ci', 'Commercial invoice', 'Must be an exact match to the invoice on file for Blanket ID BID-2026-DE-0147.', ['Invoice number matches the document on file', 'Shipper and consignee match the document on file', 'Description and HS code match the document on file', 'Currency and value match the document on file'], [], ['Commercial_invoice_AZ-BER-0147.pdf']), ...ok('Commercial_invoice_AZ-BER-0147.pdf', 0, '02:50') },
-      { ...doc('pl', 'Packing list', 'Must be an exact match to the packing list on file for this Blanket ID.', ['Package count and weight match the document on file', 'Description matches the document on file'], [], ['Packing_list_AZ-BER-0147.pdf']), ...ok('Packing_list_AZ-BER-0147.pdf', 0, '02:51') },
+      { ...doc('ci', 'Commercial invoice', 'Must be an exact match to the invoice on file for Blanket ID BID-2026-DE-0147.', ['Invoice number matches the document on file', 'Shipper and consignee match the document on file', 'Description and HS code match the document on file', 'Currency and value match the document on file'], [], ['Commercial_invoice_NVS-BER-0147.pdf']), ...ok('Commercial_invoice_NVS-BER-0147.pdf', 0, '02:50') },
+      { ...doc('pl', 'Packing list', 'Must be an exact match to the packing list on file for this Blanket ID.', ['Package count and weight match the document on file', 'Description matches the document on file'], [], ['Packing_list_NVS-BER-0147.pdf']), ...ok('Packing_list_NVS-BER-0147.pdf', 0, '02:51') },
       { ...doc('dgd', 'Shipper’s declaration (Class 7)', 'Must be an exact match to the declaration on file, with today’s activity and transport index.', ['UN number and radionuclide match the document on file', 'Activity and transport index for this package', 'Signature and date'], [], ['Class7_declaration_AZ-BER.pdf']), ...ok('Class7_declaration_AZ-BER.pdf', 0, '02:55') },
     ],
     commentary: [
@@ -201,8 +201,8 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   // ---------------- Imports ----------------
   {
     job: '261425108CL', order: 'ORD-2026-016', direction: 'Import', serviceLine: 'Clinical Supply Logistics', tier: 'Critical',
-    lane: 'BR → GB', origin: { place: 'Porto Alegre', country: 'Brazil', code: 'BR' }, destination: { place: 'Macclesfield', country: 'United Kingdom', code: 'GB' },
-    goods: 'IMP returns · AZD-4573 50 mg vials · 2–8 °C · 4 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
+    lane: 'BR → GB', origin: { place: 'Porto Alegre', country: 'Brazil', code: 'BR' }, destination: { place: 'Camberley', country: 'United Kingdom', code: 'GB' },
+    goods: 'IMP returns · JDQ-4573 50 mg vials · 2–8 °C · 4 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
     status: 'docs', deadline: { label: 'Importer of record needed before arrival', at: atTime(1, 6, 15) },
     docs: [
       { ...RETURNS_INVOICE, ...ok('Proforma_invoice_IMP_returns_0412_v2.pdf', -1, '16:58', 2), resolved: [{ check: 'Customs value and currency', fix: 'Customs value was blank.' }] },
@@ -211,7 +211,7 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
       { ...IOR },
     ],
     commentary: [
-      { id: 'c1', at: t(0, '08:05'), who: 'Hannah Price · WC Customs Heathrow', doc: 'ior', text: 'To lodge the CDS entry under returned goods relief I need the importer of record for AstraZeneca UK: GB EORI and the VAT choice (postponed VAT accounting recommended). Please upload the importer of record form.' },
+      { id: 'c1', at: t(0, '08:05'), who: 'Hannah Price · WC Customs Heathrow', doc: 'ior', text: 'To lodge the CDS entry under returned goods relief I need the importer of record for Novartis UK: GB EORI and the VAT choice (postponed VAT accounting recommended). Please upload the importer of record form.' },
       { id: 'c2', at: t(-1, '17:20'), who: 'World Courier Customer Service · Salesforce', text: '3 of 4 documents checked. The importer of record details are outstanding before OK to Send can be requested.' },
     ],
     activity: [
@@ -222,14 +222,14 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   },
   {
     job: '261425331CL', order: 'ORD-2026-015', direction: 'Import', serviceLine: 'Clinical Supply Logistics', tier: 'Optimised',
-    lane: 'IN → GB', origin: { place: 'Mumbai', country: 'India', code: 'IN' }, destination: { place: 'Macclesfield', country: 'United Kingdom', code: 'GB' },
-    goods: 'IMP returns · AZD-9833 25 mg tablets · ambient · 2 cartons', route: 'external', broker: 'Albion Customs Ltd (your appointed broker)', specialist: 'Priya Chandra',
+    lane: 'IN → GB', origin: { place: 'Mumbai', country: 'India', code: 'IN' }, destination: { place: 'Camberley', country: 'United Kingdom', code: 'GB' },
+    goods: 'IMP returns · LXE-9833 25 mg tablets · ambient · 2 cartons', route: 'external', broker: 'Albion Customs Ltd (your appointed broker)', specialist: 'Priya Chandra',
     status: 'broker', deadline: { label: 'Broker review due before arrival', at: atTime(2, 5, 50) }, requestedAt: t(0, '09:30'),
     docs: [
       { ...RETURNS_INVOICE, ...ok('Proforma_invoice_IMP_returns_0288.pdf', 0, '09:10') },
       { ...RECON, ...ok('Packing_list_reconciliation_0288.pdf', 0, '09:11') },
       { ...RGR, ...ok('Export_declaration_MRN_0288.pdf', 0, '09:15') },
-      { ...IOR, ...ok('Importer_of_record_AZ_UK.pdf', 0, '09:20') },
+      { ...IOR, ...ok('Importer_of_record_Novartis_UK.pdf', 0, '09:20') },
     ],
     commentary: [
       { id: 'c1', at: t(0, '11:05'), who: 'Priya Chandra · Albion Customs', text: 'Documents received. Checking the original export MRN against CDS for returned goods relief; OK to Send will be confirmed before the flight lands at LHR.' },
@@ -244,14 +244,14 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   },
   {
     job: '261425490CL', order: 'ORD-2026-014', direction: 'Import', serviceLine: 'Clinical Supply Logistics', tier: 'Optimised',
-    lane: 'SG → GB', origin: { place: 'Singapore', country: 'Singapore', code: 'SG' }, destination: { place: 'Macclesfield', country: 'United Kingdom', code: 'GB' },
-    goods: 'IMP returns · AZD-9833 25 mg tablets · frozen on dry ice · 3 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
+    lane: 'SG → GB', origin: { place: 'Singapore', country: 'Singapore', code: 'SG' }, destination: { place: 'Camberley', country: 'United Kingdom', code: 'GB' },
+    goods: 'IMP returns · LXE-9833 25 mg tablets · frozen on dry ice · 3 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
     status: 'docs', deadline: { label: 'Documents due before pick-up', at: atTime(2, 9, 0) },
     docs: [
       { ...RETURNS_INVOICE, ...ok('Proforma_invoice_IMP_returns_0107.pdf', 0, '10:40') },
       { ...RECON },
       { ...RGR },
-      { ...IOR, ...ok('Importer_of_record_AZ_UK.pdf', 0, '10:45') },
+      { ...IOR, ...ok('Importer_of_record_Novartis_UK.pdf', 0, '10:45') },
     ],
     commentary: [
       { id: 'c1', at: t(0, '10:45'), who: 'World Courier Customer Service · Salesforce', text: '2 of 4 documents checked. The packing list with reconciliation and the proof of original export are needed before OK to Send can be requested.' },
@@ -264,22 +264,22 @@ export const BROKERAGE_SEED: BrokerageShipment[] = [
   },
   {
     job: '261418220CL', order: 'ORD-2026-004', direction: 'Import', serviceLine: 'Clinical Supply Logistics', tier: 'Critical',
-    lane: 'BR → GB', origin: { place: 'São Paulo', country: 'Brazil', code: 'BR' }, destination: { place: 'Macclesfield', country: 'United Kingdom', code: 'GB' },
-    goods: 'IMP returns · AZD-4573 50 mg vials · 2–8 °C · 6 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
+    lane: 'BR → GB', origin: { place: 'São Paulo', country: 'Brazil', code: 'BR' }, destination: { place: 'Camberley', country: 'United Kingdom', code: 'GB' },
+    goods: 'IMP returns · JDQ-4573 50 mg vials · 2–8 °C · 6 cartons', route: 'wc', broker: 'World Courier Customs · Heathrow', specialist: 'Hannah Price',
     status: 'ok', delivered: true, deadline: { label: 'Delivered', at: atTime(-5, 11, 20) }, requestedAt: t(-8, '15:10'), okAt: t(-8, '16:45'),
     docs: [
       { ...RETURNS_INVOICE, ...ok('Proforma_invoice_IMP_returns_0391.pdf', -8, '14:50') },
       { ...RECON, ...ok('Packing_list_reconciliation_0391.pdf', -8, '14:51') },
       { ...RGR, ...ok('Export_declaration_MRN_0391.pdf', -8, '14:55') },
-      { ...IOR, ...ok('Importer_of_record_AZ_UK.pdf', -8, '15:00') },
+      { ...IOR, ...ok('Importer_of_record_Novartis_UK.pdf', -8, '15:00') },
     ],
     commentary: [
-      { id: 'c1', at: t(-5, '08:10'), who: 'Hannah Price · WC Customs Heathrow', text: 'Entry cleared under returned goods relief with no inspection; duty and VAT nil. Released to the WC London hub for delivery to the Macclesfield returns store.' },
+      { id: 'c1', at: t(-5, '08:10'), who: 'Hannah Price · WC Customs Heathrow', text: 'Entry cleared under returned goods relief with no inspection; duty and VAT nil. Released to the WC London hub for delivery to the Camberley returns store.' },
       { id: 'c2', at: t(-8, '16:45'), who: 'Hannah Price · WC Customs Heathrow', text: 'OK to Send given. CDS entry pre-lodged.' },
       { id: 'c3', at: t(-8, '15:10'), who: 'World Courier Customer Service · Salesforce', text: 'Request OK to Send received with 4 documents checked.' },
     ],
     activity: [
-      { at: t(-5, '11:20'), text: 'Delivered to AstraZeneca Macclesfield returns store' },
+      { at: t(-5, '11:20'), text: 'Delivered to Novartis UK Camberley returns store' },
       { at: t(-5, '08:10'), text: 'Customs released · returned goods relief' },
       { at: t(-8, '16:45'), text: 'OK to Send given' },
       { at: t(-8, '15:10'), text: 'Request OK to Send submitted' },

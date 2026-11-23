@@ -3,11 +3,11 @@
 export const USER_BASE = {
   first: "Sam",
   last: "Whitfield",
-  email: "sam.whitfield@astrazeneca.com",
+  email: "sam.whitfield@novartis.com",
   title: "Head of Clinical Supply Chain Systems",
   department: "Clinical Supply Chain",
   role: "Account Admin",
-  company: "AstraZeneca",
-  legalEntity: "AstraZeneca UK Limited",
-  customerNo: "C-AZ-00417"
+  company: "Novartis",
+  legalEntity: "Novartis Pharmaceuticals UK Limited",
+  customerNo: "C-NVS-00417"
 }

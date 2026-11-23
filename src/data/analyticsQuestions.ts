@@ -6,12 +6,12 @@ export const ANALYTICS_QUESTIONS = [
     page: "kpis"
   },
   {
-    q: "Which lanes are at highest excursion risk next month?",
-    page: "risk"
+    q: "Which incidents missed the 2 hour resolution target?",
+    page: "overview"
   },
   {
-    q: "How does my OTIF compare with peers?",
-    page: "benchmark"
+    q: "How fast were incidents notified this month?",
+    page: "kpis"
   },
   {
     q: "What is my CO\u2082e per shipment trend?",

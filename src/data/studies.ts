@@ -2,8 +2,8 @@
 
 export const STUDIES = [
   {
-    id: "AZ-ONC-301",
-    title: "Phase III \u00b7 AZD-4573 in advanced solid tumours",
+    id: "NVS-ONC-301",
+    title: "Phase III \u00b7 JDQ-4573 in advanced solid tumours",
     phase: "Phase III",
     therapeuticArea: "Oncology",
     serviceLines: ["clinical"],
@@ -107,7 +107,7 @@ export const STUDIES = [
     ]
   },
   {
-    id: "AZ-CORE-201",
+    id: "NVS-CORE-201",
     title: "Phase II \u00b7 cardiovascular outcomes",
     phase: "Phase II",
     therapeuticArea: "Cardiovascular, renal and metabolism",
@@ -178,7 +178,7 @@ export const STUDIES = [
     ]
   },
   {
-    id: "AZ-CGT-101",
+    id: "NVS-CGT-101",
     title: "Phase I \u00b7 autologous cell therapy",
     phase: "Phase I",
     therapeuticArea: "Cell and gene therapy",
@@ -235,7 +235,7 @@ export const STUDIES = [
     ]
   },
   {
-    id: "AZ-RAD-404",
+    id: "NVS-RAD-404",
     title: "Phase II \u00b7 radioligand therapy",
     phase: "Phase II",
     therapeuticArea: "Oncology \u00b7 radiopharmaceutical",
@@ -258,7 +258,7 @@ export const STUDIES = [
         adherence: 90,
         openIssues: 0,
         health: "Watch",
-        depot: "Macclesfield",
+        depot: "Camberley",
         stockDays: 0
       },
       {
@@ -272,7 +272,7 @@ export const STUDIES = [
         adherence: 95,
         openIssues: 0,
         health: "Good",
-        depot: "Macclesfield",
+        depot: "Camberley",
         stockDays: 0
       },
       {

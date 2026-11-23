@@ -11,6 +11,7 @@ import { LOCALE_ACK, useSettings } from '../lib/settings'
 import { LOCALES, Locale, USER } from '../lib/user'
 import { Listener, canListen, canSpeak, listen, speak, stopSpeaking } from '../lib/voice'
 import { useLive } from '../lib/live'
+import { INCIDENTS, SLA } from '../data/incidents'
 import { FEATURES } from '../lib/release'
 import { useBrokerage, needsYou, STATUS_LABEL, nextAction } from '../lib/brokerage'
 import { OFFICE_HOURS, Order, addHours, allOrders, fmtTime, fmtWhen, inOfficeHours, nextOfficeSlot, nextOrderRef, parseWhen, useOrders, weekLater } from '../lib/orders'
@@ -203,7 +204,7 @@ export default function Cora() {
     if (study || /stud|site|protocol/.test(s)) {
       const st = study ? STUDIES.find((x) => x.id.toLowerCase() === study[0].toLowerCase()) : undefined
       if (st) return { text: `${st.id} (${st.title}): ${st.sites} sites in ${st.countries} countries, ${st.collections} collections and ${st.deliveries} deliveries, logistics adherence ${st.adherence}%. Status: ${st.status}.`, actions: [go('Open the study', `/studies?study=${st.id}`)] }
-      return { text: `You have ${STUDIES.length} active studies. Site 102 (AZ-CORE-201, Singapore) is below its stock threshold and needs a decision on the replenishment tier.`, actions: [go('Open Studies', '/studies'), go('Site 102', '/studies?site=Site%20102')] }
+      return { text: `You have ${STUDIES.length} active studies. Site 102 (NVS-CORE-201, Singapore) is below its stock threshold and needs a decision on the replenishment tier.`, actions: [go('Open Studies', '/studies'), go('Site 102', '/studies?site=Site%20102')] }
     }
     if (/customs|broker|ok to send|clearance|import (permit|licen)|export (declaration|licen)|hs code|duty|duties/.test(s)) {
       const all = useBrokerage.getState().shipments
@@ -212,6 +213,10 @@ export default function Cora() {
       return { text: mine.length ? `${mine.length} brokerage shipment${mine.length > 1 ? 's need' : ' needs'} you before customs can proceed:\n${lines}\n\nEverything else is in review or already OK to Send.` : `Nothing is waiting on you. ${all.filter((b) => b.status === 'review' || b.status === 'broker').length} shipments are in review and ${all.filter((b) => b.status === 'ok').length} are OK to Send.`, actions: [go('Open Brokerage', '/brokerage'), ...mine.slice(0, 2).map((b) => go(`Job ${b.job} · ${STATUS_LABEL[b.status]}`, `/brokerage/${b.job}`))] }
     }
     if (/inventor|storage|stock|depot|lot|expir/.test(s)) return { text: 'Site 102 in Singapore has 4 days of IMP lot 24M204 left. Replenishment ORD-2026-011 is booked on the Optimised tier and collects tomorrow; upgrading to Critical lands it within 24 hours.', actions: [go('Review the replenishment', '/studies?site=Site%20102')] }
+    if (/incident|notif(y|ied|ication)|resolv|sla|service level|15 min|2 hour/.test(s)) {
+      const missed = INCIDENTS.filter((i) => i.notifyMins > SLA.notifyMins || (i.resolveMins !== undefined && i.resolveMins > SLA.resolveMins))
+      return { text: `Incident response, last 30 days: 98% of incidents were notified to you within 15 minutes of being identified (Radiopharma 100%, median 4 min; Clinical Supply 96%, median 7 min) and 90% were resolved within 2 hours (Radiopharma 94%, Clinical Supply 88%).${missed.length ? `\n\nMissed recently: ${missed.map((i) => `${i.type} on job ${i.job} (notified in ${i.notifyMins} min${i.resolveMins ? `, resolved in ${Math.floor(i.resolveMins / 60)} h ${i.resolveMins % 60} m` : ''})`).join('; ')}.` : ''}`, actions: [go('Incident response KPIs', '/insights'), go('Live alerts', '/shipments/live')] }
+    }
     if (/kpi|otif|performance|insight|analytic|report|how am i/.test(s)) return { text: 'Your OTIF for September was 97.6%, up 0.2 pp and above your 96% agreement target. Temperature compliance is 99.2% and you rank in the top 12% of shippers on the Cencora network.', actions: [go('Open Insights', '/insights')] }
     if (/agreement|rate|solution|service line|bundle|add-?on/.test(s)) return { text: 'You have two active solutions: Radiopharma (Critical tier with Data Analytics and Customs brokerage) and Clinical Supply Logistics (Critical and Optimised tiers, selected per shipment, with Customs brokerage). Rates, schedules and amendments are in Solutions.', actions: [go('Open Solutions', '/solutions'), go('Request a quote', '/book?mode=quote')] }
     if (/book|new shipment|quote|order/.test(s)) return { text: 'I can start a booking for you. Direct orders price from your rate card and confirm immediately; quotes are for new service lines, bundles or add-ons.', actions: [go('Book a shipment', '/book'), go('Request a quote', '/book?mode=quote')] }

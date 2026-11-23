@@ -20,7 +20,7 @@ export default function LaneReroute({ defaultOpen = false, onSpecialist, firedAt
   useEffect(() => { if (!open) return; setRisk(71); const id = setInterval(() => setRisk((r) => (r > 18 ? r - 1 : r)), 25); return () => clearInterval(id) }, [open])
   useEffect(() => { setOpen(defaultOpen) }, [defaultOpen])
 
-  const MAC = proj(-2.13, 53.26), LHR = proj(-0.46, 51.47), FRA = proj(8.57, 50.03), BER = proj(13.5, 52.36), CHA = proj(13.38, 52.53)
+  const MAC = proj(-0.74, 51.34), LHR = proj(-0.46, 51.47), FRA = proj(8.57, 50.03), BER = proj(13.5, 52.36), CHA = proj(13.38, 52.53)
   const line = (a: number[], b: number[]) => `M${a[0]},${a[1]} L${b[0]},${b[1]}`
 
   return (
@@ -45,7 +45,7 @@ export default function LaneReroute({ defaultOpen = false, onSpecialist, firedAt
                   <path d={`${line(MAC, LHR)} ${line(LHR, FRA)} ${line(FRA, BER)}`} stroke="#8A879C" strokeWidth={0.6} strokeDasharray="1.2 1.2" fill="none" />
                   <circle cx={FRA[0]} cy={FRA[1]} r={4} fill="#C0392B" opacity={0.18} /><circle cx={FRA[0]} cy={FRA[1]} r={1.5} fill="#C0392B" />
                   <path d={`${line(MAC, LHR)} ${line(LHR, BER)} ${line(BER, CHA)}`} stroke="#1E7A3E" strokeWidth={0.9} fill="none" />
-                  {[[MAC, 'Macclesfield', 2, -2.2], [LHR, 'LHR', 2, 3.6], [BER, 'BER', -1, 4], [CHA, 'Charité', 2, -2.2]].map(([p, l, dx, dy]) => { const q = p as number[]; return (<g key={l as string}><circle cx={q[0]} cy={q[1]} r={1.2} fill="#461E96" /><text x={q[0] + (dx as number)} y={q[1] + (dy as number)} style={{ fontSize: 2.6, fontWeight: 600, fill: '#1C1A33', fontFamily: 'Inter, sans-serif' }}>{l as string}</text></g>) })}
+                  {[[MAC, 'Camberley', 2, -2.2], [LHR, 'LHR', 2, 3.6], [BER, 'BER', -1, 4], [CHA, 'Charité', 2, -2.2]].map(([p, l, dx, dy]) => { const q = p as number[]; return (<g key={l as string}><circle cx={q[0]} cy={q[1]} r={1.2} fill="#461E96" /><text x={q[0] + (dx as number)} y={q[1] + (dy as number)} style={{ fontSize: 2.6, fontWeight: 600, fill: '#1C1A33', fontFamily: 'Inter, sans-serif' }}>{l as string}</text></g>) })}
                   <text x={FRA[0] + 3} y={FRA[1] + 4.5} style={{ fontSize: 2.4, fill: '#C0392B', fontFamily: 'Inter, sans-serif' }}>Storm cell 22:00–04:00</text>
                 </WorldMap>
                 <div className="live"><span className="pill ok">LIVE</span> Excursion risk <strong className="mono" style={{ marginLeft: 4 }}>{risk}</strong><span className="faint">↓ from 71</span></div>

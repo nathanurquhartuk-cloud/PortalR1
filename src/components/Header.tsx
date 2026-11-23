@@ -16,7 +16,7 @@ function routeFor(q: string): string | null {
   if (/^\d{8,9}[A-Z]{0,2}$/i.test(s)) return `/shipments?job=${s.toUpperCase()}`
   if (/^INV-|^CN-/i.test(s)) return `/financials?invoice=${s.toUpperCase()}`
   if (/^(ORD|QUO)-/i.test(s)) return `/shipments?ref=${s.toUpperCase()}`
-  if (/^AZ-/i.test(s)) return `/studies?study=${s.toUpperCase()}`
+  if (/^NVS-/i.test(s)) return `/studies?study=${s.toUpperCase()}`
   if (/^site\s?\d+/i.test(s)) return FEATURES.storage ? `/inventory?site=${encodeURIComponent(s)}` : `/studies?site=${encodeURIComponent(s)}`
   if (/customs|broker|ok to send|clearance|import permit|licen[cs]e|hs code|declaration/i.test(s)) return '/brokerage'
   if (/^capa/i.test(s)) return `/documents?capa=${s.toUpperCase()}`

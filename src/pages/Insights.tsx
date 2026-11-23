@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Card, Page, PageHead, Pill, Progress, Section, Segmented, Stat, cx } from '../components/ui'
 import { ANALYTICS_QUESTIONS } from '../data/analyticsQuestions'
 import { KPI_SETS } from '../data/kpiSets'
+import { INCIDENTS, INCIDENT_SLA, IncidentLine, SLA, fmtMins } from '../data/incidents'
 import { CAPAS, capaForJob } from '../data/capas'
 import { openCora } from '../lib/notifications'
 
@@ -138,6 +139,62 @@ function Compare({ rows }: { rows: [string, number, number][] }) {
 }
 
 // ---------- page ----------
+
+// ----- Incident response: notified within 15 minutes, resolved within 2 hours -----
+function IncidentSla({ line }: { line?: IncidentLine }) {
+  const lines: IncidentLine[] = line ? [line] : ['Radiopharma', 'Clinical Supply Logistics']
+  const agg = lines.map((l) => INCIDENT_SLA[l])
+  const total = agg.reduce((a, s) => a + s.incidents, 0)
+  const notified = Math.round(agg.reduce((a, s) => a + (s.notified15 * s.incidents) / 100, 0) / total * 100)
+  const resolved = Math.round(agg.reduce((a, s) => a + (s.resolved2h * s.incidents) / 100, 0) / total * 100)
+  const recent = INCIDENTS.filter((i) => !line || i.line === line)
+  const trend = (k: 'notifyTrend' | 'resolveTrend') => agg[0][k].map((_, i) => Math.round(agg.reduce((a, s) => a + s[k][i] * s.incidents, 0) / total))
+  return (
+    <>
+      <div className="grid cols-2" style={{ marginTop: 16 }}>
+        <Card>
+          <div className="row between"><div><div className="strong">Incident notified within 15 minutes</div><div className="small muted">Of being identified by World Courier · last 30 days · {total} incidents</div></div><Pill tone={notified >= 95 ? 'ok' : 'warn'} dot>Target 100%</Pill></div>
+          <div className="row" style={{ gap: 18, alignItems: 'flex-end', marginTop: 12 }}>
+            <div className="sla-value">{notified}%</div>
+            <div className="small muted" style={{ paddingBottom: 6 }}>Median {line ? INCIDENT_SLA[line].medianNotify : '6 min'} from identification to your notification</div>
+          </div>
+          <Progress value={notified} />
+          <div style={{ marginTop: 14 }}><Sparkline values={trend('notifyTrend')} labels={['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct']} /></div>
+        </Card>
+        <Card>
+          <div className="row between"><div><div className="strong">Incident resolved within 2 hours</div><div className="small muted">From identification to resolution · last 30 days</div></div><Pill tone={resolved >= 90 ? 'ok' : 'warn'} dot>Target 95%</Pill></div>
+          <div className="row" style={{ gap: 18, alignItems: 'flex-end', marginTop: 12 }}>
+            <div className="sla-value">{resolved}%</div>
+            <div className="small muted" style={{ paddingBottom: 6 }}>Median {line ? INCIDENT_SLA[line].medianResolve : '58 min'} to resolve</div>
+          </div>
+          <Progress value={resolved} />
+          <div style={{ marginTop: 14 }}><Sparkline values={trend('resolveTrend')} labels={['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct']} /></div>
+        </Card>
+      </div>
+      <Card style={{ marginTop: 16 }}>
+        <div className="row between"><div><div className="strong">Recent incidents</div><div className="small muted" style={{ marginBottom: 8 }}>Identified, notified and resolved times against the 15 minute and 2 hour service levels</div></div><Link to="/shipments/live" className="small">Live alerts <ArrowRight size={14} style={{ verticalAlign: -2 }} /></Link></div>
+        <div className="table-wrap">
+          <table className="table">
+            <thead><tr><th>Incident</th><th>Shipment</th><th>Identified</th><th className="num">Notified in</th><th className="num">Resolved in</th><th>Status</th></tr></thead>
+            <tbody>
+              {recent.map((i) => (
+                <tr key={i.id}>
+                  <td><div className="strong">{i.type}</div><div className="tiny muted" style={{ maxWidth: 360 }}>{i.summary}</div></td>
+                  <td><Link to={`/shipments?job=${i.job}`} className="mono small">{i.job}</Link><div className="tiny muted">{i.line}</div></td>
+                  <td className="small">{i.identified}</td>
+                  <td className={cx('num', i.notifyMins <= SLA.notifyMins ? 'green' : 'red')}>{fmtMins(i.notifyMins)}{i.notifyMins <= SLA.notifyMins ? '' : ' ·  missed'}</td>
+                  <td className={cx('num', i.resolveMins === undefined ? 'muted' : i.resolveMins <= SLA.resolveMins ? 'green' : 'red')}>{i.resolveMins === undefined ? 'open' : `${fmtMins(i.resolveMins)}${i.resolveMins <= SLA.resolveMins ? '' : ' ·  missed'}`}</td>
+                  <td><Pill tone={i.status === 'Resolved' ? 'ok' : 'warn'} dot={i.status === 'Open'}>{i.status}</Pill></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </>
+  )
+}
+
 export default function Insights() {
   const [params, setParams] = useSearchParams()
   const page: ReportPage = isPage(params.get('page')) ? (params.get('page') as ReportPage) : 'overview'
@@ -149,7 +206,7 @@ export default function Insights() {
     <Page>
       <PageHead
         title="Insights"
-        sub="Live KPI reports, predictive risk, cold chain integrity, sustainability and benchmarking."
+        sub="Live KPIs for Radiopharma and Clinical Supply Logistics: incident response against the 15 minute and 2 hour service levels, temperature, sustainability and spend."
         tools={<><Button variant="secondary" to="/shipments/live" icon={<MapPin size={16} />}>Open live tracking</Button><Button onClick={() => openCora('How am I performing this month?')} icon={<Sparkles size={16} />}>Ask Cora</Button></>}
       />
 
@@ -160,11 +217,12 @@ export default function Insights() {
       {page === 'overview' && (
         <>
           <div className="grid cols-4">
-            <Stat label="OTIF (on time in full)" value="97.4%" delta="+0.8 pp vs prior period" tone="ok" />
-            <Stat label="Temperature compliance" value="99.2%" delta="+0.3 pp" tone="ok" />
-            <Stat label="Active shipments" value="847" delta="+12 vs last week" tone="ok" />
-            <Stat label="Spend YTD" value="$1.20M" delta="+22% vs last year" tone="warn" />
+            <Stat label="Incidents notified within 15 min" value="98%" delta="41 incidents · 30 days · target 100%" tone="ok" />
+            <Stat label="Incidents resolved within 2 h" value="90%" delta="Median 58 min · target 95%" tone="warn" />
+            <Stat label="OTIF (on time in full)" value="97.4%" delta="Radiopharma 98.1% · Clinical Supply 96.6%" tone="ok" />
+            <Stat label="Temperature compliance" value="99.2%" delta="+0.3 pp vs prior period" tone="ok" />
           </div>
+          <IncidentSla />
           <div className="grid cols-2" style={{ marginTop: 16 }}>
             <Card>
               <div className="strong">Shipment volume by service line</div>
@@ -177,8 +235,9 @@ export default function Insights() {
               <div className="small muted" style={{ marginBottom: 12 }}>Auto-generated from this page</div>
               <div className="stack" style={{ gap: 12 }}>
                 {[
-                  <>Shipment volume reached <b>338</b> in October, up <b>14.6%</b> year on year, driven mainly by Radiopharma (<b>+21%</b>).</>,
-                  <>OTIF improved to <b>97.4%</b>, the highest in the period, after a <b>38%</b> reduction in tarmac dwell on the LHR → GRU lane.</>,
+                  <>Every Radiopharma incident in the last 30 days was notified within <b>15 minutes</b> (median <b>4 min</b>); Clinical Supply reached <b>96%</b> after one customs hold at GRU was notified at the limit.</>,
+                  <>Resolution within <b>2 hours</b> stands at <b>90%</b>; the two misses were customs holds in Brazil, now covered by pre-clearance by default.</>,
+                  <>Shipment volume reached <b>319</b> in October, up <b>14.6%</b> year on year, driven mainly by Radiopharma (<b>+21%</b>).</>,
                   <>CO₂ per shipment fell <b>9%</b> as 18% of EU road legs moved to consolidated milk runs.</>,
                 ].map((t, i) => (
                   <div key={i} className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
@@ -244,6 +303,8 @@ export default function Insights() {
                   </Link>
                 ))}
               </Card>
+              <div className="strong" style={{ marginTop: 22 }}>Incident response · {setKey}</div>
+              <IncidentSla line={setKey as IncidentLine} />
             </>
           )}
         </>

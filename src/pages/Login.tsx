@@ -7,12 +7,12 @@ const BASE = (import.meta as unknown as { env: { BASE_URL: string } }).env.BASE_
 
 export default function Login() {
   const nav = useNavigate()
-  const [email, setEmail] = useState('sam.whitfield@astrazeneca.com')
+  const [email, setEmail] = useState('sam.whitfield@novartis.com')
   const [password, setPassword] = useState('')
 
   const signIn = (e?: FormEvent) => {
     e?.preventDefault()
-    useAuth.getState().login(email || 'sam.whitfield@astrazeneca.com', password || 'sso')
+    useAuth.getState().login(email || 'sam.whitfield@novartis.com', password || 'sso')
     nav('/')
   }
 
@@ -24,7 +24,7 @@ export default function Login() {
           <span className="strong" style={{ fontSize: 15 }}>Customer Workspace</span>
         </div>
         <h1 style={{ fontSize: 24, marginBottom: 6 }}>Welcome back</h1>
-        <p className="muted" style={{ marginBottom: 24 }}>Sign in to your AstraZeneca workspace.</p>
+        <p className="muted" style={{ marginBottom: 24 }}>Sign in to your Novartis workspace.</p>
         <form onSubmit={signIn} className="stack" style={{ gap: 14 }}>
           <div className="field">
             <label htmlFor="email">Work email</label>
@@ -37,7 +37,7 @@ export default function Login() {
           <Button type="submit" block>Sign in</Button>
         </form>
         <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <button className="link" type="button" onClick={() => signIn()}>Sign in with AstraZeneca SSO</button>
+          <button className="link" type="button" onClick={() => signIn()}>Sign in with Novartis SSO</button>
         </div>
       </div>
       <p className="small faint" style={{ marginTop: 20 }}>Future-state vision · illustrative data</p>

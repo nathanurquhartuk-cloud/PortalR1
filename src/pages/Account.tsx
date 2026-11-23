@@ -57,7 +57,7 @@ function Contacts() {
     { name: 'James T.', role: 'Account director', detail: 'Agreements, rates, new service lines and bundles' },
   ]
   const addresses = [
-    { name: 'Macclesfield site', detail: 'AstraZeneca, Charter Way, Macclesfield SK10 2NA, United Kingdom', kind: 'Collection' },
+    { name: 'Camberley site', detail: 'Novartis UK, Frimley Business Park, Camberley GU16 7SR, United Kingdom', kind: 'Collection' },
     { name: 'Charité Berlin', detail: 'Charité – Universitätsmedizin Berlin, Charitéplatz 1, 10117 Berlin, Germany', kind: 'Delivery' },
     { name: 'WC Frankfurt depot', detail: 'World Courier, Cargo City Süd, 60549 Frankfurt am Main, Germany', kind: 'Depot' },
     { name: 'WC Singapore depot', detail: 'World Courier, Airport Logistics Park, Singapore 819829', kind: 'Depot' },
@@ -191,7 +191,7 @@ function Security() {
   return (
     <>
       <Card>
-        <KV rows={[['Last sign-in', 'Today'], ['Single sign-on', 'AstraZeneca Entra ID'], ['Multi-factor authentication', 'On']]} />
+        <KV rows={[['Last sign-in', 'Today'], ['Single sign-on', 'Novartis Entra ID'], ['Multi-factor authentication', 'On']]} />
       </Card>
       <Section title="Sessions">
         <div className="card" style={{ overflow: 'hidden' }}>

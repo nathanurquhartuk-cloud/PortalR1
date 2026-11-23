@@ -15,7 +15,7 @@ export const CASES = [
   {
     id: "SUP-2026-042",
     topic: "Study / site supply",
-    reference: "Site 102 \u00b7 AZ-CORE-201",
+    reference: "Site 102 \u00b7 NVS-CORE-201",
     summary: "Replenishment \u00b7 stock below threshold \u00b7 Optimised tier booked",
     owner: "Priya N. \u00b7 customer service",
     opened: "Yesterday",

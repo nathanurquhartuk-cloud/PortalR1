@@ -79,7 +79,7 @@ export const SCHEDULES = [
       {
         date: "12 Sep 2026",
         title: "Amendment 2 \u00b7 Data Analytics add-on added to all Critical tier shipments",
-        by: "Approved \u00b7 AZ Procurement / WC Commercial"
+        by: "Approved \u00b7 Novartis Procurement / WC Commercial"
       },
       {
         date: "1 Jul 2026",
@@ -178,8 +178,8 @@ export const SCHEDULES = [
     amendments: [
       {
         date: "1 Oct 2026",
-        title: "Schedule 3 signed \u00b7 Critical and Optimised tiers for studies AZ-ONC-301, AZ-CORE-201, AZ-CGT-101, AZ-RAD-404",
-        by: "Approved \u00b7 AZ Clinical Supply Chain / WC Commercial"
+        title: "Schedule 3 signed \u00b7 Critical and Optimised tiers for studies NVS-ONC-301, NVS-CORE-201, NVS-CGT-101, NVS-RAD-404",
+        by: "Approved \u00b7 Novartis Clinical Supply Chain / WC Commercial"
       }
     ],
     linked: {
